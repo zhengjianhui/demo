@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demo.dao.mybatis.archive.UpdateArchiveMapper" >
+  <resultMap id="BaseResultMap" type="demo.domain.UpdateArchive" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="relation_update_staff_id" property="relationUpdateStaffId" jdbcType="BIGINT" />
+    <result column="relation_archive_id" property="relationArchiveId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, url, last_update_time, relation_update_staff_id, relation_archive_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from md_update_archive
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from md_update_archive
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="demo.domain.UpdateArchive" >
+    insert into md_update_archive (id, url, last_update_time, 
+      relation_update_staff_id, relation_archive_id)
+    values (#{id,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR}, #{lastUpdateTime,jdbcType=TIMESTAMP}, 
+      #{relationUpdateStaffId,jdbcType=BIGINT}, #{relationArchiveId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="demo.domain.UpdateArchive" >
+    insert into md_update_archive
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="lastUpdateTime != null" >
+        last_update_time,
+      </if>
+      <if test="relationUpdateStaffId != null" >
+        relation_update_staff_id,
+      </if>
+      <if test="relationArchiveId != null" >
+        relation_archive_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdateTime != null" >
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationUpdateStaffId != null" >
+        #{relationUpdateStaffId,jdbcType=BIGINT},
+      </if>
+      <if test="relationArchiveId != null" >
+        #{relationArchiveId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="demo.domain.UpdateArchive" >
+    update md_update_archive
+    <set >
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdateTime != null" >
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationUpdateStaffId != null" >
+        relation_update_staff_id = #{relationUpdateStaffId,jdbcType=BIGINT},
+      </if>
+      <if test="relationArchiveId != null" >
+        relation_archive_id = #{relationArchiveId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="demo.domain.UpdateArchive" >
+    update md_update_archive
+    set url = #{url,jdbcType=VARCHAR},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      relation_update_staff_id = #{relationUpdateStaffId,jdbcType=BIGINT},
+      relation_archive_id = #{relationArchiveId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

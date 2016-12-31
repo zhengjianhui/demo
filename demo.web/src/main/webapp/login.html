@@ -1,0 +1,37 @@
+<html>
+<head>
+    <title>登录</title>
+</head>
+
+<body onload='document.f.username.focus();'>
+<h3>Login</h3>
+<form name='f' action='rest/login' method='POST'>
+    <table>
+        <!--<tr>-->
+            <!--<td>二级域名:</td>-->
+            <!--<td><input type='text' name='secDomain' value='my'></td>-->
+        <!--</tr>-->
+        <tr>
+            <td>登录名:</td>
+            <td><input type='text' name='username' value=''></td>
+        </tr>
+        <tr>
+            <td>密码:</td>
+            <td><input type='password' name='password' /></td>
+        </tr>
+        <!--<tr>-->
+            <!--<td>clientId:</td>-->
+            <!--<td><input type='text' name='clientId'/></td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+            <!--<td>记住密码:</td>-->
+            <!--<td><input id="rememberMe" name="rememberMe" type="checkbox" value="true" /></td>-->
+        <!--</tr>-->
+        <tr>
+            <td colspan='2'><input name="submit" type="submit"
+                                   value="Login" /></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

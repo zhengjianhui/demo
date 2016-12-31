@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+
+
+    <!--
+        配置组件扫描
+        扫描contorller层
+        只负责扫描
+        @Component  通用
+        @Controller 控制层
+        @Service    业务层
+        @Repository 持久层
+
+     -->
+    <!-- 自动扫描contorller层下所有包 -->
+    <context:component-scan base-package="demo.contorller" />
+
+
+
+    <!--
+        配置MVC注解扫描
+        @RequestMapping 属于MVC框架所以要配置MVC注解扫描
+     -->
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
+            <bean class="org.springframework.data.web.SortHandlerMethodArgumentResolver" />
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+
+
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--单个文件大小限制为5M -->
+        <property name="maxUploadSize" value="5242880" />
+        <property name="resolveLazily" value="true" />
+        <!--缓存大小(字节点位),默认为1M; -->
+        <!--property name="maxInMemorySize" value="4096"/ -->
+        <property name="defaultEncoding" value="UTF-8" />
+    </bean>
+
+
+
+
+
+
+
+
+</beans>

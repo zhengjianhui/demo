@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demo.dao.mybatis.user.PermissionsMapper" >
+  <resultMap id="BaseResultMap" type="demo.domain.user.Permissions" >
+    <id column="role_no" property="roleNo" jdbcType="VARCHAR" />
+    <id column="permissions_no" property="permissionsNo" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="map" >
+    delete from permissions
+    where role_no = #{roleNo,jdbcType=VARCHAR}
+      and permissions_no = #{permissionsNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="demo.domain.user.Permissions" >
+    insert into permissions (role_no, permissions_no)
+    values (#{roleNo,jdbcType=VARCHAR}, #{permissionsNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="demo.domain.user.Permissions" >
+    insert into permissions
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleNo != null" >
+        role_no,
+      </if>
+      <if test="permissionsNo != null" >
+        permissions_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleNo != null" >
+        #{roleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionsNo != null" >
+        #{permissionsNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

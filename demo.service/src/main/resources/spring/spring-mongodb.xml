@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/data/mongo
+        http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+
+    <!-- 工厂类 -->
+    <mongo:db-factory id="mongoDbFactory" host="${mongo.host}" port="${mongo.port}" dbname="${mongo.dbname}"
+                      username="${mongo.username}" password="${mongo.password}"/>
+
+    <!-- 映射转换器，扫描back-package目录下的文件，根据注释，把它们作为mongodb的一个collection的映射 -->
+    <mongo:mapping-converter id="mongoConverter" base-package="demo.domain.mongo">
+        <mongo:custom-converters base-package="demo.domain.mongo"/>
+    </mongo:mapping-converter>
+
+    <!-- mongodb bean的仓库目录，会自动扫描扩展了MongoRepository接口的接口进行注入
+        等同于 Document(collection="mongodb") mongodb对应表
+        配置后 不需要写 collection="mongodb"  默认以类名作为一个集合名
+     -->
+    <mongo:repositories base-package="demo.dao.mongodb"/>
+
+    <!-- 模板类
+    连接池 WriterConcern 模式选择
+    有些应用配置了 WriterConcern.FSYNC_SAFE 模式；这种配置意味着客户端在插入数据或更新数据的时候，要求 mongodb 必须将所更新的数据写入磁盘并返回更新成功的信息给程序
+
+    默认是不开启
+
+    -->
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg ref="mongoDbFactory"/>
+        <constructor-arg ref="mongoConverter"/>
+        <property name="writeConcern" value="SAFE"/>
+    </bean>
+
+</beans>

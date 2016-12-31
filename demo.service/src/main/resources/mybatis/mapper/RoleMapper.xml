@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demo.dao.mybatis.user.RoleMapper" >
+  <resultMap id="BaseResultMap" type="demo.domain.user.Role" >
+    <id column="no" property="no" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="block_id" property="blockId" jdbcType="BIGINT" />
+    <result column="property_id" property="propertyId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    no, name, block_id, property_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from role
+    where no = #{no,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from role
+    where no = #{no,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="demo.domain.user.Role" >
+    insert into role (no, name, block_id, 
+      property_id)
+    values (#{no,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{blockId,jdbcType=BIGINT}, 
+      #{propertyId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="demo.domain.user.Role" >
+    insert into role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="no != null" >
+        no,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="blockId != null" >
+        block_id,
+      </if>
+      <if test="propertyId != null" >
+        property_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="no != null" >
+        #{no,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="blockId != null" >
+        #{blockId,jdbcType=BIGINT},
+      </if>
+      <if test="propertyId != null" >
+        #{propertyId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="demo.domain.user.Role" >
+    update role
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="blockId != null" >
+        block_id = #{blockId,jdbcType=BIGINT},
+      </if>
+      <if test="propertyId != null" >
+        property_id = #{propertyId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where no = #{no,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="demo.domain.user.Role" >
+    update role
+    set name = #{name,jdbcType=VARCHAR},
+      block_id = #{blockId,jdbcType=BIGINT},
+      property_id = #{propertyId,jdbcType=BIGINT}
+    where no = #{no,jdbcType=VARCHAR}
+  </update>
+</mapper>
