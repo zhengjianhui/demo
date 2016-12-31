@@ -26,6 +26,7 @@ public class PubSubService {
             @Override
             public void run() {
                 while (true) {
+                    // 传入实现发布订阅的类，将数据源注入  第二个参数为订阅的频道
                     jedis.psubscribe(new MyListener(pool), "__keyevent@*__:expired");
                 }
             }

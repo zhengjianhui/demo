@@ -33,4 +33,5 @@ public class RediListenerEventTestController {
 
         System.out.println(new Date().getTime());
     }
+
 }
