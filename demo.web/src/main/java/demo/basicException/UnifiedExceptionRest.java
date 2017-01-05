@@ -38,9 +38,7 @@ public class UnifiedExceptionRest {
 
         logger.error("exception code:" + exceptionData.getCode() + ",exception message:" + exceptionData.getMessage(), ex);
         logger.info("错误信息: {}", ex);
-        System.out.println();
-        System.out.println();
-        System.out.println();
+
 
         return exceptionData;
     }

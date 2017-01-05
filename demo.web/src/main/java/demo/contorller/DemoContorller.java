@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import demo.dao.mybatis.interceptorPlugin.page.PageRequest;
 import demo.dao.mybatis.interceptorPlugin.page.PageResult;
-import demo.dao.nosql.DbTest1;
-import demo.dao.nosql.PubTest;
+import demo.dao.redis.DbTest1;
 import demo.domain.Archive;
 import demo.service.archive.ArchiveService;
 import demo.test.Aaa;
@@ -34,8 +33,7 @@ public class DemoContorller {
     @Autowired
     private Demo ddddd;
 
-    @Autowired
-    private PubTest pubTest;
+
 
     @Autowired
     private DbTest1 dbTest1;
@@ -67,7 +65,6 @@ public class DemoContorller {
             @ApiParam(name = "b", value = "枚举对象") @RequestParam(value = "b", required = true) String b) throws InterruptedException {
 
         String key = dbTest1.addTest(a, b);
-        pubTest.addTest("java", key);
 
     }
 

@@ -1,6 +1,13 @@
 package demo.domain.user;
 
-public class User {
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.Permission;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+
+import java.util.Collection;
+import java.util.Set;
+
+public class User implements AuthorizationInfo {
     private Long id;
 
     private String username;
@@ -8,6 +15,12 @@ public class User {
     private String loginname;
 
     private String password;
+
+    protected Set<String> roles;
+
+    protected Set<String> stringPermissions;
+
+    protected Set<Permission> objectPermissions;
 
     public Long getId() {
         return id;
@@ -39,5 +52,32 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
+    }
+
+    @Override
+    public Collection<String> getRoles() {
+        return roles;
+    }
+
+    @Override
+    public Collection<String> getStringPermissions() {
+        return stringPermissions;
+    }
+
+    @Override
+    public Collection<Permission> getObjectPermissions() {
+        return objectPermissions;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public void setStringPermissions(Set<String> stringPermissions) {
+        this.stringPermissions = stringPermissions;
+    }
+
+    public void setObjectPermissions(Set<Permission> objectPermissions) {
+        this.objectPermissions = objectPermissions;
     }
 }

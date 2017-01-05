@@ -1,7 +1,7 @@
 package demo.rest.login;
 
 import demo.basicxception.DemoException;
-import demo.dao.nosql.PubTest;
+import demo.shiro.utils.ShiroSecurityUtils;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,9 +24,6 @@ public class UserContorller {
     @Autowired
     private DemoUserService demoUserService;
 
-    @Autowired
-    private PubTest pubTest;
-
 
     @RequestMapping(value = "/signUp", method = RequestMethod.PUT)
     @ApiOperation("添加用户")
@@ -34,6 +31,22 @@ public class UserContorller {
 
 //        demoUserService.signUp(user);
     }
+
+
+    @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
+    @ApiOperation("用户信息")
+    public User userInfo() throws DemoException {
+
+        return ShiroSecurityUtils.getUser();
+    }
+
+
+//    @RequestMapping(value = "/login", method = RequestMethod.POST)
+//    @ApiOperation("用户信息")
+//    public User login() throws DemoException {
+//
+//        return new User();
+//    }
 
 
 }

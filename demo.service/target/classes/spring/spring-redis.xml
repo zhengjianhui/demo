@@ -20,35 +20,11 @@
 
     <!-- 连接池设置 -->
     <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
-        <property name="maxIdle" value="${redis.maxIdle}" />
-        <property name="maxTotal" value="${redis.maxActive}" />
-        <property name="maxWaitMillis" value="${redis.maxWait}" />
-        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <property name="maxTotal" value="${redis.maxActive}"/>
+        <property name="maxWaitMillis" value="${redis.maxWait}"/>
+        <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
     </bean>
-
-    <!-- jedis 配置 构造注入 -->
-    <bean id="pool" class="redis.clients.jedis.JedisPool">
-        <constructor-arg index="0" ref="poolConfig" />
-        <constructor-arg>
-            <value>${redis.host}</value>
-        </constructor-arg>
-        <constructor-arg>
-            <value type="int">${redis.port}</value>
-        </constructor-arg>
-        <constructor-arg>
-            <value type="int">${redis.timeout}</value>
-        </constructor-arg>
-        <constructor-arg>
-            <value>${redis.password}</value>
-        </constructor-arg>
-    </bean>
-
-    <!-- jedis 监听配置 启动时初始化一个线程循环监听  -->
-    <bean id="test" class="demo.dao.nosql.listener.PubSubService" init-method="handleMessage" >
-        <constructor-arg index="0" ref="pool"/>
-    </bean>
-
-
 
     <!-- 工厂 ip post 连接池设置
          database  设置数据库
@@ -56,12 +32,12 @@
     -->
     <bean id="connectionFactory1"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
-        <property name="poolConfig" ref="poolConfig" />
-        <property name="port" value="${redis.port}" />
-        <property name="hostName" value="${redis.host}" />
-        <property name="password" value="${redis.password}" />
-        <property name="timeout" value="${redis.timeout}" />
-        <property name="database" value="0"/>
+        <property name="poolConfig" ref="poolConfig"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="hostName" value="${redis.host}"/>
+        <property name="password" value="${redis.password}"/>
+        <property name="timeout" value="${redis.timeout}"/>
+        <property name="database" value="1"/>
     </bean>
 
     <!-- 模板类 tempLate   通过模板类实现 redis 操作-->
@@ -69,39 +45,81 @@
     <bean id="db1Template" class="org.springframework.data.redis.core.RedisTemplate">
         <property name="connectionFactory" ref="connectionFactory1"/>
         <property name="keySerializer">
-            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
         </property>
     </bean>
 
     <bean id="connectionFactory2"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
-        <property name="poolConfig" ref="poolConfig" />
-        <property name="port" value="${redis.port}" />
-        <property name="hostName" value="${redis.host}" />
-        <property name="password" value="${redis.password}" />
-        <property name="timeout" value="${redis.timeout}" />
-        <property name="database" value="1"/>
+        <property name="poolConfig" ref="poolConfig"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="hostName" value="${redis.host}"/>
+        <property name="password" value="${redis.password}"/>
+        <property name="timeout" value="${redis.timeout}"/>
+        <property name="database" value="2"/>
     </bean>
     <bean id="db2" class="org.springframework.data.redis.core.RedisTemplate">
         <property name="connectionFactory" ref="connectionFactory2"/>
         <property name="keySerializer">
-            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
         </property>
     </bean>
 
+
+    <bean id="shiroConnectionFactory"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="poolConfig" ref="poolConfig"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="hostName" value="${redis.host}"/>
+        <property name="password" value="${redis.password}"/>
+        <property name="timeout" value="${redis.timeout}"/>
+        <property name="database" value="15"/>
+    </bean>
+    <bean id="shiroListenerTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="shiroConnectionFactory"/>
+        <property name="keySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+        </property>
+    </bean>
+
+
+    <!-- spring data 监听 -->
     <bean id="redisConnectionFactory"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
-        <property name="poolConfig" ref="poolConfig" />
-        <property name="port" value="${redis.port}" />
-        <property name="hostName" value="${redis.host}" />
-        <property name="password" value="${redis.password}" />
-        <property name="timeout" value="${redis.timeout}" />
-        <property name="database" value="2"/>
+        <property name="poolConfig" ref="poolConfig"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="hostName" value="${redis.host}"/>
+        <property name="password" value="${redis.password}"/>
+        <property name="timeout" value="${redis.timeout}"/>
+        <property name="database" value="0"/>
     </bean>
     <bean id="listenerTemplate" class="org.springframework.data.redis.core.RedisTemplate">
         <property name="connectionFactory" ref="redisConnectionFactory"/>
         <property name="keySerializer">
-            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+        </property>
+    </bean>
+
+    <bean id="topicRedisListener" class="demo.dao.redis.listener.TopicRedisListener">
+        <property name="redisTemplate" ref="listenerTemplate"/>
+    </bean>
+    <bean id="topicContainer"
+          class="org.springframework.data.redis.listener.RedisMessageListenerContainer"
+          destroy-method="destroy">
+        <property name="connectionFactory" ref="redisConnectionFactory"/>
+        <property name="taskExecutor">
+            <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">
+                <property name="poolSize" value="3"/>
+            </bean>
+        </property>
+        <property name="messageListeners">
+            <map>
+                <entry key-ref="topicRedisListener">
+                    <bean class="org.springframework.data.redis.listener.ChannelTopic">
+                        <constructor-arg value="__keyevent@0__:expired"/>
+                    </bean>
+                </entry>
+            </map>
         </property>
     </bean>
 

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
-import demo.dao.nosql.DbTest1;
+import demo.dao.redis.DbTest1;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
