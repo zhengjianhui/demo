@@ -22,7 +22,7 @@ public class RedisShiroSessionRepository implements ShiroSessionRepository {
     public static final String REDIS_SHIRO_SESSION = "shiro-demo-session:";
 
     @Autowired
-    @Qualifier("shiroListenerTemplate")
+    @Qualifier("shiroSessionTemplate")
     private RedisTemplate<String, String> customShiroCache;
 
 

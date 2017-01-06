@@ -4,9 +4,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="repository" class="demo.shiro.session.repository.RedisShiroSessionRepository" />
+    <bean id="repository" class="demo.shiro.session.repository.RedisShiroSessionRepository"/>
     <!-- 会话ID生成器 -->
-    <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+    <bean id="sessionIdGenerator"
+          class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
     <!-- sessionDao -->
     <bean id="sessionDAO" class="demo.shiro.session.dao.MySessionDao">
         <property name="shiroSessionRepository" ref="repository"/>
@@ -15,16 +16,31 @@
     <!-- 会话Cookie模板 -->
     <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <!--cookie的name，我故意取名叫xxxxbaidu -->
-        <constructor-arg value="v_v-s-baidu"/>
+        <constructor-arg value="zjh_demo"/>
         <property name="httpOnly" value="true"/>
-        <!--cookie的有效时间 -->
+        <!--cookie的有效时间 正负都可以，为负数时表示永不超时 -->
         <property name="maxAge" value="-1"/>
         <!-- 配置存储Session Cookie的domain为 一级域名
         <property name="domain" value=".itboy.net"/>
          -->
     </bean>
+
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMe"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="2592000"/><!-- 30天 -->
+    </bean>
+    <!-- cipherKey是加密rememberMe Cookie的密钥；默认AES算法 -->
+    <bean id="rememberMeManager"
+          class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cipherKey"
+                  value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+
     <!-- 会话验证调度器 -->
-    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
+    <bean id="sessionValidationScheduler"
+          class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
         <!-- 间隔多少时间检查，不配置是60分钟 -->
         <property name="interval" value="1800000"/>
         <property name="sessionManager" ref="sessionManager"/>
@@ -43,6 +59,44 @@
         <property name="sessionIdCookie" ref="sessionIdCookie"/>
     </bean>
 
+    <!-- 缓存的设置 -->
+    <!-- jedis 配置 构造注入 -->
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <property name="maxTotal" value="${redis.maxActive}"/>
+        <property name="maxWaitMillis" value="${redis.maxWait}"/>
+        <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
+    </bean>
+    <!-- jedis 配置 构造注入 -->
+    <bean id="pool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg index="0" ref="poolConfig"/>
+        <constructor-arg>
+            <value>${redis.host}</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value type="int">${redis.port}</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value type="int">${redis.timeout}</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value>${redis.password}</value>
+        </constructor-arg>
+    </bean>
+    <!--<bean class="org.apache.shiro.cache.MemoryConstrainedCacheManager" id="shiroCacheManager"/>-->
+    <bean id="cacherepository" class="demo.shiro.cache.repository.JedisManager">
+        <property name="jedisPool" ref="pool"/>
+    </bean>
+    <!-- shiro 缓存实现，对ShiroCacheManager，我是采用redis的实现 -->
+    <bean id="RedisShiroCacheManager" class="demo.shiro.cache.RedisShiroCacheManager">
+        <property name="jedisManager" ref="cacherepository"/>
+    </bean>
+    <!-- 用户缓存 -->
+    <bean id="customShiroCacheManager" class="demo.shiro.cache.CustomShiroCacheManager">
+        <property name="shiroCacheManager" ref="RedisShiroCacheManager"/>
+    </bean>
+
+
     <!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
@@ -55,16 +109,21 @@
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="customRealm"/>
         <property name="sessionManager" ref="sessionManager"/>
+        <property name="rememberMeManager" ref="rememberMeManager"/>
+        <property name="cacheManager" ref="customShiroCacheManager"/>
     </bean>
     <!-- 自定义拦截器 -->
     <!--<bean id="login" class="demo.shiro.filter.LoginFilter"/>-->
     <!-- 基于Form表单的身份验证过滤器 -->
-    <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
+    <bean id="formAuthenticationFilter"
+          class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
         <property name="usernameParam" value="username"/>
         <property name="passwordParam" value="password"/>
         <property name="loginUrl" value="/rest/login"/>
         <property name="successUrl" value="/rest/userInfo"/>
+        <!--<property name="rememberMeParam" value="rememberMe"/>-->
     </bean>
+
     <bean id="role" class="demo.shiro.filter.RoleFilter"/>
 
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
@@ -73,7 +132,7 @@
             <map>
                 <!-- 将自定义 的拦截器 注入shiroFilter中 -->
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
-                <entry key="roles" value-ref="role" />
+                <entry key="roles" value-ref="role"/>
             </map>
         </property>
 

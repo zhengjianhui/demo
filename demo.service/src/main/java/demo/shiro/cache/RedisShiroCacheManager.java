@@ -2,6 +2,7 @@ package demo.shiro.cache;
 
 import org.apache.shiro.cache.Cache;
 
+import demo.shiro.cache.repository.JedisManager;
 import demo.shiro.redis.cache.ShiroCacheManager;
 
 /**
@@ -9,12 +10,11 @@ import demo.shiro.redis.cache.ShiroCacheManager;
  */
 public class RedisShiroCacheManager implements ShiroCacheManager {
 
-//    private JedisManager jedisManager;
+    private JedisManager jedisManager;
 
     @Override
     public <K, V> Cache<K, V> getCache(String name) {
-//        return new JedisShiroCache<K, V>(name, getJedisManager());
-        return null;
+        return new RedisShiroCache<K, V>(name, getJedisManager());
     }
 
     @Override
@@ -23,5 +23,11 @@ public class RedisShiroCacheManager implements ShiroCacheManager {
         //getJedisManager().getJedis().shutdown();
     }
 
+    public JedisManager getJedisManager() {
+        return jedisManager;
+    }
 
+    public void setJedisManager(JedisManager jedisManager) {
+        this.jedisManager = jedisManager;
+    }
 }
