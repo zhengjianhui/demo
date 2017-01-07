@@ -1,4 +1,4 @@
-package demo.shiro.redis.cache;
+package demo.shiro.cache;
 
 import org.apache.shiro.cache.Cache;
 

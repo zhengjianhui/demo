@@ -3,7 +3,6 @@ package demo.shiro.cache;
 import org.apache.shiro.cache.Cache;
 
 import demo.shiro.cache.repository.JedisManager;
-import demo.shiro.redis.cache.ShiroCacheManager;
 
 /**
  * Created by zhengjianhui on 17/1/3.

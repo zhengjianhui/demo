@@ -62,7 +62,7 @@ public class RedisShiroCache <K, V> implements Cache<K, V> {
         V previos = get(key);
         try {
             jedisManager.saveValueByKey(DB_INDEX, SerializableUtils.serialize(key),
-                    SerializableUtils.serialize(value), -1);
+                    SerializableUtils.serialize(value), 1800);
         } catch (Exception e) {
         }
         return previos;

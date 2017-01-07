@@ -6,8 +6,6 @@ import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.cache.CacheManager;
 
-import demo.shiro.redis.cache.ShiroCacheManager;
-
 /**
  * Created by zhengjianhui on 17/1/3.
  */

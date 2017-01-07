@@ -1,4 +1,4 @@
-package demo.mj;
+package demo.enums;
 
 import org.springframework.util.Assert;
 
