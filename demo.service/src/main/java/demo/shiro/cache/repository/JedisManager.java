@@ -1,11 +1,13 @@
 package demo.shiro.cache.repository;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.shiro.session.Session;
 
+import demo.shiro.utils.SerializableUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.exceptions.JedisConnectionException;
@@ -81,9 +83,8 @@ public class JedisManager {
         try {
             jedis = getJedis();
             jedis.select(dbIndex);
-            jedis.set(key, value);
-            if (expireTime > 0)
-                jedis.expire(key, expireTime);
+            jedis.setex(key, 1800, value);
+//            jedis.expire(key, 1800);
         } catch (Exception e) {
             isBroken = true;
             throw e;

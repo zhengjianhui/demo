@@ -48,10 +48,10 @@ public class RedisShiroCache <K, V> implements Cache<K, V> {
 
     @Override
     public V get(K key) throws CacheException {
-        byte[] byteKey = SerializableUtils.serialize(key);
+
         byte[] byteValue = new byte[0];
         try {
-            byteValue = jedisManager.getValueByKey(DB_INDEX, byteKey);
+            byteValue = jedisManager.getValueByKey(DB_INDEX, SerializableUtils.serialize(key));
         } catch (Exception e) {
         }
         return (V) SerializableUtils.deserialize(byteValue);
@@ -61,9 +61,9 @@ public class RedisShiroCache <K, V> implements Cache<K, V> {
     public V put(K key, V value) throws CacheException {
         V previos = get(key);
         try {
-            jedisManager.saveValueByKey(DB_INDEX, SerializableUtils.serialize(key),
-                    SerializableUtils.serialize(value), 1800);
+            jedisManager.saveValueByKey(DB_INDEX, SerializableUtils.serialize(key), SerializableUtils.serialize(value), 1800);
         } catch (Exception e) {
+
         }
         return previos;
     }
@@ -102,5 +102,8 @@ public class RedisShiroCache <K, V> implements Cache<K, V> {
         return null;
     }
 
+    private String buildCacheKey(Object key) {
+        return REDIS_SHIRO_CACHE + getName() + ":" + key;
+    }
 
 }

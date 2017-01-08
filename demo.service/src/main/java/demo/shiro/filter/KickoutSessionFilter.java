@@ -1,35 +1,132 @@
 package demo.shiro.filter;
 
-import org.apache.shiro.web.filter.AccessControlFilter;
+import java.io.Serializable;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
-import demo.shiro.session.repository.ShiroSessionRepository;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.mgt.SubjectDAO;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.DefaultSessionKey;
+import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.util.WebUtils;
+
+import demo.domain.user.User;
+import demo.shiro.session.dao.MySessionDao;
 
 /**
  * Created by zhengjianhui on 17/1/6.
  */
 public class KickoutSessionFilter extends AccessControlFilter {
 
-    private ShiroSessionRepository shiroSessionRepository;
+    private String kickoutUrl; //踢出后到的地址
+    private boolean kickoutAfter = false; //踢出之前登录的/之后登录的用户 默认踢出之前登录的用户
+    private int maxSession = 1; //同一个帐号最大会话数 默认1
 
+    private SessionManager sessionManager;
+    private Cache<String, Deque<Serializable>> cache;
+    private MySessionDao mySessionDao;
+
+    private static final String REDIS_SHIRO_DEQUE = "shiro-demo-deque:";
+
+    public void setKickoutUrl(String kickoutUrl) {
+        this.kickoutUrl = kickoutUrl;
+    }
+
+    public void setKickoutAfter(boolean kickoutAfter) {
+        this.kickoutAfter = kickoutAfter;
+    }
+
+    public void setMaxSession(int maxSession) {
+        this.maxSession = maxSession;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
+    public void setCacheManager(CacheManager cacheManager) {
+        this.cache = cacheManager.getCache("shiro-kickout-session");
+    }
+
+    public void setMySessionDao(MySessionDao mySessionDao) {
+        this.mySessionDao = mySessionDao;
+    }
 
     @Override
-    protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
         return false;
     }
 
     @Override
-    protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
-        return false;
-    }
+    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
+        Subject subject = getSubject(request, response);
+        if(!subject.isAuthenticated() && !subject.isRemembered()) {
+            //如果没有登录，直接进行之后的流程
+            return Boolean.TRUE;
+        }
 
-    public ShiroSessionRepository getShiroSessionRepository() {
-        return shiroSessionRepository;
-    }
+        Session session = subject.getSession();
+        User user = (User) subject.getPrincipal();
+        String username = REDIS_SHIRO_DEQUE + user.getUsername();
+        Serializable sessionId = session.getId();
 
-    public void setShiroSessionRepository(ShiroSessionRepository shiroSessionRepository) {
-        this.shiroSessionRepository = shiroSessionRepository;
+        //TODO 同步控制
+        Deque<Serializable> deque = cache.get(username);
+        if(deque == null) {
+            deque = new LinkedList<Serializable>();
+        }
+
+        //如果队列里没有此sessionId，且用户没有被踢出；放入队列
+        if(!deque.contains(sessionId) && session.getAttribute("kickout") == null) {
+            deque.push(sessionId);
+        }
+
+        //如果队列里的sessionId数超出最大会话数，开始踢人
+
+        Session kickoutSession = null;
+        while(deque.size() > maxSession) {
+            Serializable kickoutSessionId = null;
+            if(kickoutAfter) { //如果踢出后者
+                kickoutSessionId = deque.removeFirst();
+            } else { //否则踢出前者
+                kickoutSessionId = deque.removeLast();
+            }
+            try {
+                kickoutSession = sessionManager.getSession(new DefaultSessionKey(kickoutSessionId));
+                if(kickoutSession != null) {
+                    //设置会话的kickout属性表示踢出了
+                    kickoutSession.setAttribute("kickout", true);
+                }
+            } catch (Exception e) {//ignore exception
+
+            }
+        }
+
+        cache.put(username, deque);
+
+        //如果被踢出了，直接退出，重定向到踢出后的地址
+        if (session != null && session.getAttribute("kickout") != null) {
+            //会话被踢出了
+            try {
+                subject.logout();
+            } catch (Exception e) { //ignore
+
+            }
+//            saveRequest(request);
+//            WebUtils.issueRedirect(request, response, kickoutUrl);
+            // 生成异常中止 请求，防止重复过滤 产生无用session  和 cache
+            WebUtils.toHttp(response).sendError(HttpServletResponse.SC_PAYMENT_REQUIRED);
+            return Boolean.FALSE;
+        }
+
+        return Boolean.TRUE;
     }
 }

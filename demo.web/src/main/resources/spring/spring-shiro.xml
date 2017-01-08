@@ -59,6 +59,7 @@
         <property name="sessionIdCookie" ref="sessionIdCookie"/>
     </bean>
 
+
     <!-- 缓存的设置 -->
     <!-- jedis 配置 构造注入 -->
     <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
@@ -92,7 +93,7 @@
         <property name="jedisManager" ref="cacherepository"/>
     </bean>
     <!-- 用户缓存 -->
-    <bean id="customShiroCacheManager" class="demo.shiro.cache.CustomShiroCacheManager">
+    <bean id="cacheManager" class="demo.shiro.cache.CustomShiroCacheManager">
         <property name="shiroCacheManager" ref="RedisShiroCacheManager"/>
     </bean>
 
@@ -109,8 +110,9 @@
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="customRealm"/>
         <property name="sessionManager" ref="sessionManager"/>
+        <property name="cacheManager" ref="cacheManager"/>
         <property name="rememberMeManager" ref="rememberMeManager"/>
-        <property name="cacheManager" ref="customShiroCacheManager"/>
+
     </bean>
     <!-- 自定义拦截器 -->
     <!--<bean id="login" class="demo.shiro.filter.LoginFilter"/>-->
@@ -121,7 +123,16 @@
         <property name="passwordParam" value="password"/>
         <property name="loginUrl" value="/rest/login"/>
         <property name="successUrl" value="/rest/userInfo"/>
-        <!--<property name="rememberMeParam" value="rememberMe"/>-->
+        <property name="rememberMeParam" value="rememberMe"/>
+    </bean>
+    <bean id="kickoutSessionControlFilter" class="demo.shiro.filter.KickoutSessionFilter">
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="sessionManager" ref="sessionManager"/>
+        <property name="mySessionDao" ref="sessionDAO"/>
+
+        <property name="kickoutAfter" value="false"/>
+        <property name="maxSession" value="1"/>
+        <property name="kickoutUrl" value="rest/userInfo"/>
     </bean>
 
     <bean id="role" class="demo.shiro.filter.RoleFilter"/>
@@ -133,6 +144,7 @@
                 <!-- 将自定义 的拦截器 注入shiroFilter中 -->
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
                 <entry key="roles" value-ref="role"/>
+                <entry key="kickout" value-ref="kickoutSessionControlFilter"/>
             </map>
         </property>
 
@@ -142,7 +154,7 @@
                 <!-- 在URI 后指定使用的拦截器 -->
                 /index.html = anon
                 /rest/login = authc
-                /** = roles, roles[user]
+                /** = kickout, roles, roles[user]
                 <!--/page/register/* = anon-->
                 <!--/page/index.jsp = authc-->
                 <!--/page/addItem* = authc,roles[数据管理员]-->
