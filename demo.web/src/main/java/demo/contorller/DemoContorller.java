@@ -2,6 +2,8 @@ package demo.contorller;
 
 import java.util.Date;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +16,9 @@ import demo.dao.mybatis.interceptorPlugin.page.PageRequest;
 import demo.dao.mybatis.interceptorPlugin.page.PageResult;
 import demo.dao.redis.DbTest1;
 import demo.domain.Archive;
+import demo.domain.user.User;
 import demo.service.archive.ArchiveService;
+import demo.shiro.utils.ShiroSecurityUtils;
 import demo.test.Aaa;
 import demo.test.Demo;
 import io.swagger.annotations.Api;
@@ -54,6 +58,9 @@ public class DemoContorller {
         Aaa a = new Aaa();
         a.setAge("中文");
 
+        User user = ShiroSecurityUtils.getUser();
+        System.out.println(user.getUsername());
+
         archiveService.add();
 
         return a;
@@ -83,5 +90,57 @@ public class DemoContorller {
     public PageResult<Archive> queryAll(@ApiParam(name = "page", value = "分页参数") @RequestBody PageRequest page) {
 
         return archiveService.queryList(page);
+    }
+
+
+    @ApiOperation("角色验证1")
+    @RequiresRoles("admin")
+    @RequestMapping(value = "/demo1", method = RequestMethod.GET)
+    public String demo1() {
+
+        return "郑建辉";
+    }
+
+    @ApiOperation("角色验证2")
+    @RequiresRoles("user")
+    @RequestMapping(value = "/demo2", method = RequestMethod.GET)
+    public String demo2() {
+
+        return "郑建辉";
+    }
+
+    @ApiOperation("权限验证1")
+    @RequiresPermissions("test")
+    @RequestMapping(value = "/demo3", method = RequestMethod.GET)
+    public String demo3() {
+
+        return "郑建辉";
+    }
+
+    @ApiOperation("权限验证2")
+    @RequiresRoles("user")
+    @RequiresPermissions("asd")
+    @RequestMapping(value = "/demo4", method = RequestMethod.GET)
+    public String demo4() {
+
+        return "郑建辉";
+    }
+
+    @ApiOperation("权限验证3")
+    @RequiresRoles("user")
+    @RequiresPermissions("test")
+    @RequestMapping(value = "/demo5", method = RequestMethod.GET)
+    public String demo5() {
+
+        return "郑建辉";
+    }
+
+    @ApiOperation("权限验证4")
+    @RequiresRoles("admin")
+    @RequiresPermissions("test")
+    @RequestMapping(value = "/demo6", method = RequestMethod.GET)
+    public String demo6() {
+
+        return "郑建辉";
     }
 }

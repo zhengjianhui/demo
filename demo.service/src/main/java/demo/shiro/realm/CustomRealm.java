@@ -40,6 +40,7 @@ public class CustomRealm extends AuthorizingRealm {
         roles.add("user");
         //权限名的集合
         Set<String> permissions = new HashSet<>();
+        permissions.add("test");
 
 //        ShiroSecurityUtils.getUser().setRoles(roles);
 

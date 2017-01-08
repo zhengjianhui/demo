@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd">
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <bean id="repository" class="demo.shiro.session.repository.RedisShiroSessionRepository"/>
     <!-- 会话ID生成器 -->
@@ -154,7 +157,7 @@
                 <!-- 在URI 后指定使用的拦截器 -->
                 /index.html = anon
                 /rest/login = authc
-                /** = kickout, roles, roles[user]
+                /** = kickout, authc
                 <!--/page/register/* = anon-->
                 <!--/page/index.jsp = authc-->
                 <!--/page/addItem* = authc,roles[数据管理员]-->
@@ -164,6 +167,13 @@
                 <!--/page/updateItem*=authc,roles[数据管理员]-->
             </value>
         </property>
+    </bean>
+
+
+
+    <aop:config proxy-target-class="true"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
     </bean>
 
 </beans>

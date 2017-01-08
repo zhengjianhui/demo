@@ -83,8 +83,7 @@ public class JedisManager {
         try {
             jedis = getJedis();
             jedis.select(dbIndex);
-            jedis.setex(key, 1800, value);
-//            jedis.expire(key, 1800);
+            jedis.setex(key, expireTime, value);
         } catch (Exception e) {
             isBroken = true;
             throw e;
