@@ -108,7 +108,15 @@
     </bean>
 
     <!-- 自定义 Realm role  -->
-    <bean id="customRealm" class="demo.shiro.realm.CustomRealm"/>
+    <bean id="customRealm" class="demo.shiro.realm.CustomRealm">
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+    </bean>
+    <bean id="credentialsMatcher" class="demo.shiro.realm.MyHashedCredentialsMatcher">
+        <property name="hashAlgorithmName" value="md5"/><!--指定hash算法为MD5；-->
+        <property name="hashIterations" value="2"/><!--指定散列次数为2次；-->
+        <property name="storedCredentialsHexEncoded" value="true"/><!--指定Hash散列值使用Hex加密存储。value="false"表明hash散列值用用Base64-encoded存储。-->
+    </bean>
+
     <!-- 安全管理器 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="customRealm"/>
@@ -148,6 +156,7 @@
             <value>
                 <!-- 在URI 后指定使用的拦截器 -->
                 /index.html = anon
+                /rest/signUp = anon
                 /rest/login = authc
                 /** = kickout, authc
                 <!--/page/register/* = anon-->

@@ -2,7 +2,7 @@ create table user (
   id bigint(20) not null comment '逻辑主键',
   userName VARCHAR(30) comment '用户名',
   loginName VARCHAR(30) comment '逻辑主键',
-  password VARCHAR(30) comment '密码',
+  password VARCHAR(60) comment '密码',
 
   PRIMARY KEY (id)
 );

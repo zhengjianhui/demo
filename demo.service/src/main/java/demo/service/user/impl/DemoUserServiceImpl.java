@@ -2,13 +2,12 @@ package demo.service.user.impl;
 
 
 import java.util.List;
-import java.util.Objects;
 
+import demo.shiro.realm.ShiroMd5;
 import demo.util.id.IdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.DigestUtils;
 
 import demo.basicxception.DemoException;
 import demo.dao.mybatis.user.PermissionsMapper;
@@ -36,8 +35,6 @@ public class DemoUserServiceImpl implements DemoUserService{
     @Autowired
     private PermissionsMapper permissionsMapper;
 
-    private String passwordChaos = "123sadasdasasfwqrdsd1";
-
     @Override
     public void signUp(User user) throws DemoException {
         Assert.notNull(user, "用户信息不能为空");
@@ -53,16 +50,23 @@ public class DemoUserServiceImpl implements DemoUserService{
         if(getUser.size() > 0)
             throw new DemoException("账号已存在");
 
-        signUp.setLoginname(null);
         signUp.setUsername(user.getUsername());
         if(userMapper.selective(signUp).size() > 0)
                 throw new DemoException("用户名以存在");
 
         // 将密码混入md5 加密
-        user.setPassword(DigestUtils.md5DigestAsHex((user.getPassword() + passwordChaos).getBytes()));
+        user.setPassword(ShiroMd5.md5Password(user.getPassword()));
 
         user.setId(IdUtil.getId());
 
         userMapper.insertSelective(user);
     }
+
+    @Override
+    public User queryUserByLoginName(String loginName) {
+
+        return userMapper.selectByLoginName(loginName);
+    }
+
+
 }

@@ -10,4 +10,6 @@ public interface DemoUserService {
 
     void signUp(User user) throws DemoException;
 
+    User queryUserByLoginName(String loginName);
+
 }

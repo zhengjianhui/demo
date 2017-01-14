@@ -25,11 +25,11 @@ public class UserContorller {
     private DemoUserService demoUserService;
 
 
-    @RequestMapping(value = "/signUp", method = RequestMethod.PUT)
+    @RequestMapping(value = "/signUp", method = RequestMethod.POST)
     @ApiOperation("添加用户")
     public void addUser(@ApiParam(name = "user", value = "用户信息") @RequestBody User user) throws DemoException {
 
-//        demoUserService.signUp(user);
+        demoUserService.signUp(user);
     }
 
 
