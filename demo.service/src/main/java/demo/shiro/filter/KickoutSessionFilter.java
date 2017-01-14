@@ -32,7 +32,6 @@ public class KickoutSessionFilter extends AccessControlFilter {
 
     private SessionManager sessionManager;
     private Cache<String, Deque<Serializable>> cache;
-    private MySessionDao mySessionDao;
 
     private static final String REDIS_SHIRO_DEQUE = "shiro-demo-deque:";
 
@@ -54,10 +53,6 @@ public class KickoutSessionFilter extends AccessControlFilter {
 
     public void setCacheManager(CacheManager cacheManager) {
         this.cache = cacheManager.getCache("shiro-kickout-session");
-    }
-
-    public void setMySessionDao(MySessionDao mySessionDao) {
-        this.mySessionDao = mySessionDao;
     }
 
     @Override

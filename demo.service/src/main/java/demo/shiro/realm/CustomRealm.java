@@ -80,9 +80,12 @@ public class CustomRealm extends AuthorizingRealm {
         User user = new User();
         Set<String> roles = new HashSet<>();
         roles.add("user");
-//        user.setRoles(roles);
+        user.setRoles(roles);
         user.setUsername(username);
         user.setPassword(password);
+
+//        throw new AuthenticationException("异常实验");
+
         /**
          * 交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以在此判断或自定义实现
          * 将User 放入

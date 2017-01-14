@@ -6,6 +6,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -90,6 +91,14 @@ public class DemoContorller {
     public PageResult<Archive> queryAll(@ApiParam(name = "page", value = "分页参数") @RequestBody PageRequest page) {
 
         return archiveService.queryList(page);
+    }
+
+    @ApiOperation("patch测试")
+    @RequestMapping(value = "/patchTest/{id}", method = RequestMethod.PATCH)
+    public void queryAll111(@ApiParam(name = "user", value = "用户对象") @RequestBody User user,
+                            @ApiParam(name = "id", value = "主键", required = true) @PathVariable("id") Long id) {
+        System.out.println(user.getUsername());
+
     }
 
 
