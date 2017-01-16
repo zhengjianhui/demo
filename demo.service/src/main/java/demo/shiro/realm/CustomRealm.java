@@ -50,16 +50,6 @@ public class CustomRealm extends AuthorizingRealm {
         Set<String> permissions = new HashSet<>();
         permissions.add("test");
 
-        // ShiroSecurityUtils.getUser().setRoles(roles);
-
-        // Iterator<Role> it = roleSet.iterator();
-        // while(it.hasNext()){
-        // roles.add(it.next().getName());
-        // for(Permission per:it.next().getPermissionSet()){
-        // permissions.add(per.getName());
-        // }
-        // }
-
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
         info.addRoles(roles);
@@ -82,42 +72,26 @@ public class CustomRealm extends AuthorizingRealm {
         // 从 shiro 的token 中获取 登入名
         UsernamePasswordToken upToken = (UsernamePasswordToken) authenticationToken;
         String username = upToken.getUsername();
-//        String password = String.valueOf(upToken.getPassword());
+        // String password = String.valueOf(upToken.getPassword());
 
         User user = demoUserService.queryUserByLoginName(username);
 
-        if(user == null) {
+        if (user == null) {
             throw new AuthenticationException("用户不存在");
         }
-//        } else if (user.getPassword().equals(password)){
-//            throw new AuthenticationException("密码错误");
-//        }
 
-
-
-//        User user = new User();
         Set<String> roles = new HashSet<>();
         roles.add("user");
         user.setRoles(roles);
 
-//        throw new AuthenticationException("异常实验");
-
+        // throw new AuthenticationException("异常实验");
         /**
-         * 交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以在此判断或自定义实现
-         * 将User 放入
+         * 交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以在此判断或自定义实现 将User 放入
          */
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(
-                user,
-                user.getPassword(),
-                ByteSource.Util.bytes(salt),//salt
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(salt), // salt
                 getName());
         return info;
     }
-
-    // @Override
-    // public String getName() {
-    // return getClass().getName();
-    // }
 
     @Override
     public void clearCache(PrincipalCollection principals) {

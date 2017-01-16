@@ -16,8 +16,6 @@ import demo.shiro.utils.ShiroSecurityUtils;
  */
 public class RoleFilter extends AccessControlFilter {
 
-    private static final String LOGIN_URL = "/rest/login";
-
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
         String[] arra = (String[]) mappedValue;

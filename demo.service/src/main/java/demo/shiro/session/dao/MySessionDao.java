@@ -21,6 +21,7 @@ public class MySessionDao extends AbstractSessionDAO {
 
     /**
      * 创建session
+     * 
      * @param session
      * @return
      */
@@ -36,6 +37,7 @@ public class MySessionDao extends AbstractSessionDAO {
 
     /**
      * 读取session
+     * 
      * @param sessionId
      * @return
      */
@@ -46,8 +48,8 @@ public class MySessionDao extends AbstractSessionDAO {
 
     @Override
     public void update(Session session) throws UnknownSessionException {
-        if(session instanceof ValidatingSession && !((ValidatingSession)session).isValid()) {
-            return; //如果会话过期/停止 没必要再更新了
+        if (session instanceof ValidatingSession && !((ValidatingSession) session).isValid()) {
+            return; // 如果会话过期/停止 没必要再更新了
         }
         shiroSessionRepository.saveSession(session);
     }
@@ -59,7 +61,7 @@ public class MySessionDao extends AbstractSessionDAO {
 
     @Override
     public Collection<Session> getActiveSessions() {
-        // TODO: 17/1/5  之后实现
+        // TODO: 17/1/5 之后实现
         return null;
     }
 

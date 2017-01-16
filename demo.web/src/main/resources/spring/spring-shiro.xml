@@ -21,7 +21,7 @@
         <!--cookie的name，我故意取名叫xxxxbaidu -->
         <constructor-arg value="zjh_demo"/>
         <property name="httpOnly" value="true"/>
-        <!--cookie的有效时间 正负都可以，为负数时表示永不超时 -->
+        <!--cookie的有效时间 正负都可以，为负数时表示永不超时 表示浏览器关闭时失效此Cookie；  -->
         <property name="maxAge" value="-1"/>
         <!-- 配置存储Session Cookie的domain为 一级域名
         <property name="domain" value=".itboy.net"/>
@@ -127,6 +127,9 @@
     </bean>
     <!-- 自定义拦截器 -->
     <bean id="login" class="demo.shiro.filter.LoginFilter"/>
+    <bean id="logout" class="demo.shiro.filter.MyLogoutFilter">
+        <property name="jedisManager" ref="cacherepository"/>
+    </bean>
 
     <bean id="kickoutSessionControlFilter" class="demo.shiro.filter.KickoutSessionFilter">
         <property name="cacheManager" ref="cacheManager"/>
@@ -134,7 +137,6 @@
 
         <property name="kickoutAfter" value="false"/>
         <property name="maxSession" value="1"/>
-        <property name="kickoutUrl" value="rest/userInfo"/>
     </bean>
 
     <bean id="role" class="demo.shiro.filter.RoleFilter"/>
@@ -148,6 +150,7 @@
                 <entry key="authc" value-ref="login"/>
                 <entry key="roles" value-ref="role"/>
                 <entry key="kickout" value-ref="kickoutSessionControlFilter"/>
+                <entry key="logout" value-ref="logout"/>
             </map>
         </property>
 
@@ -158,6 +161,7 @@
                 /index.html = anon
                 /rest/signUp = anon
                 /rest/login = authc
+                /rest/logout = logout
                 /** = kickout, authc
                 <!--/page/register/* = anon-->
                 <!--/page/index.jsp = authc-->

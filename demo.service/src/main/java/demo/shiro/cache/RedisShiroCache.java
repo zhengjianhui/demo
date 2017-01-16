@@ -12,7 +12,7 @@ import demo.shiro.utils.SerializableUtils;
 /**
  * Created by zhengjianhui on 17/1/3.
  */
-public class RedisShiroCache <K, V> implements Cache<K, V> {
+public class RedisShiroCache<K, V> implements Cache<K, V> {
 
     /**
      * 为了不和其他的缓存混淆，采用追加前缀方式以作区分
@@ -26,7 +26,6 @@ public class RedisShiroCache <K, V> implements Cache<K, V> {
     private JedisManager jedisManager;
 
     private String name;
-
 
     public RedisShiroCache(String name, JedisManager jedisManager) {
         this.name = name;
@@ -80,7 +79,7 @@ public class RedisShiroCache <K, V> implements Cache<K, V> {
 
     @Override
     public void clear() throws CacheException {
-        //TODO--
+        // TODO--
     }
 
     @Override
@@ -92,13 +91,13 @@ public class RedisShiroCache <K, V> implements Cache<K, V> {
 
     @Override
     public Set<K> keys() {
-        //TODO
+        // TODO
         return null;
     }
 
     @Override
     public Collection<V> values() {
-        //TODO
+        // TODO
         return null;
     }
 

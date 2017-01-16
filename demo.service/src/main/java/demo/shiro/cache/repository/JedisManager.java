@@ -33,13 +33,9 @@ public class JedisManager {
         if (jedis == null)
             return;
         /**
-         * @deprecated starting from Jedis 3.0 this method will not be exposed.
-         * Resource cleanup should be done using @see {@link redis.clients.jedis.Jedis#close()}
-        if (isBroken){
-        getJedisPool().returnBrokenResource(jedis);
-        }else{
-        getJedisPool().returnResource(jedis);
-        }
+         * @deprecated starting from Jedis 3.0 this method will not be exposed. Resource cleanup should be done
+         *             using @see {@link redis.clients.jedis.Jedis#close()} if (isBroken){
+         *             getJedisPool().returnBrokenResource(jedis); }else{ getJedisPool().returnResource(jedis); }
          */
         jedis.close();
     }
@@ -76,8 +72,7 @@ public class JedisManager {
         }
     }
 
-    public void saveValueByKey(int dbIndex, byte[] key, byte[] value, int expireTime)
-            throws Exception {
+    public void saveValueByKey(int dbIndex, byte[] key, byte[] value, int expireTime) throws Exception {
         Jedis jedis = null;
         boolean isBroken = false;
         try {
@@ -102,36 +97,37 @@ public class JedisManager {
 
     /**
      * 获取所有Session
+     * 
      * @param dbIndex
      * @param redisShiroSession
      * @return
      * @throws Exception
      */
-//    @SuppressWarnings("unchecked")
-//    public Collection<Session> AllSession(int dbIndex, String redisShiroSession) throws Exception {
-//		Jedis jedis = null;
-//        boolean isBroken = false;
-//        Set<Session> sessions = new HashSet<Session>();
-//		try {
-//            jedis = getJedis();
-//            jedis.select(dbIndex);
-//
-//            Set<byte[]> byteKeys = jedis.keys((JedisShiroSessionRepository.REDIS_SHIRO_ALL).getBytes());
-//            if (byteKeys != null && byteKeys.size() > 0) {
-//                for (byte[] bs : byteKeys) {
-//                	Session obj = SerializeUtil.deserialize(jedis.get(bs),
-//                    		 Session.class);
-//                     if(obj instanceof Session){
-//                    	 sessions.add(obj);
-//                     }
-//                }
-//            }
-//        } catch (Exception e) {
-//            isBroken = true;
-//            throw e;
-//        } finally {
-//            returnResource(jedis, isBroken);
-//        }
-//        return sessions;
-//    }
+    // @SuppressWarnings("unchecked")
+    // public Collection<Session> AllSession(int dbIndex, String redisShiroSession) throws Exception {
+    // Jedis jedis = null;
+    // boolean isBroken = false;
+    // Set<Session> sessions = new HashSet<Session>();
+    // try {
+    // jedis = getJedis();
+    // jedis.select(dbIndex);
+    //
+    // Set<byte[]> byteKeys = jedis.keys((JedisShiroSessionRepository.REDIS_SHIRO_ALL).getBytes());
+    // if (byteKeys != null && byteKeys.size() > 0) {
+    // for (byte[] bs : byteKeys) {
+    // Session obj = SerializeUtil.deserialize(jedis.get(bs),
+    // Session.class);
+    // if(obj instanceof Session){
+    // sessions.add(obj);
+    // }
+    // }
+    // }
+    // } catch (Exception e) {
+    // isBroken = true;
+    // throw e;
+    // } finally {
+    // returnResource(jedis, isBroken);
+    // }
+    // return sessions;
+    // }
 }

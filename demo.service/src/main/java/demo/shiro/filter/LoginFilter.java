@@ -9,6 +9,7 @@ import javax.servlet.ServletResponse;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 
@@ -31,6 +32,7 @@ public class LoginFilter extends FormAuthenticationFilter {
         this.setLoginUrl("/rest/login");
         this.setPasswordParam("password");
         this.setUsernameParam("username");
+        this.setRememberMeParam("rememberMe");
     }
 
     /**
@@ -61,12 +63,11 @@ public class LoginFilter extends FormAuthenticationFilter {
             out.close();
         }
 
-
         return Boolean.TRUE;
     }
 
     /**
-     * 针对登入失败  AuthenticationException 异常，由realm 抛出
+     * 针对登入失败 AuthenticationException 异常，由realm 抛出
      * 
      * @param token
      * @param e
@@ -93,7 +94,6 @@ public class LoginFilter extends FormAuthenticationFilter {
         return Boolean.FALSE;
     }
 
-
     /**
      * 处理登入
      * 
@@ -104,18 +104,23 @@ public class LoginFilter extends FormAuthenticationFilter {
      */
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
+        // rememberme 如果为 true 则直接默认登入
+        Subject subject = getSubject(request, response);
+        if (subject.isRemembered()) {
+            return Boolean.TRUE;
+        }
 
         // ajax 登入 或者 form 表单登入
         if ("application/json".equalsIgnoreCase(request.getContentType())) {// 不是ajax请求
-            return  executeLoginToJson(request, response);
+            return executeLoginToJson(request, response);
         } else {
             return executeLogin(request, response);
         }
     }
 
-
     /**
      * 解析 json 数据创建 token
+     * 
      * @param request
      * @param response
      * @return
@@ -125,7 +130,7 @@ public class LoginFilter extends FormAuthenticationFilter {
         BufferedReader bf = request.getReader();
         String str = null;
         StringBuffer sb = new StringBuffer();
-        while((str = bf.readLine()) != null) {
+        while ((str = bf.readLine()) != null) {
             sb.append(str);
         }
 
@@ -133,13 +138,12 @@ public class LoginFilter extends FormAuthenticationFilter {
         String username = jsonObject.get("username").getAsString();
         String password = jsonObject.get("password").getAsString();
 
-
         return this.createToken(username, password, request, response);
     }
 
-
     /**
      * 重写 登入 json 方式
+     * 
      * @param request
      * @param response
      * @return
@@ -147,7 +151,7 @@ public class LoginFilter extends FormAuthenticationFilter {
      */
     protected boolean executeLoginToJson(ServletRequest request, ServletResponse response) throws Exception {
         AuthenticationToken token = this.createTokenToJson(request, response);
-        if(token == null) {
+        if (token == null) {
             String e1 = "createToken method implementation returned null. A valid non-null AuthenticationToken must be created in order to execute a login attempt.";
             throw new IllegalStateException(e1);
         } else {
@@ -160,7 +164,5 @@ public class LoginFilter extends FormAuthenticationFilter {
             }
         }
     }
-
-
 
 }

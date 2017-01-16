@@ -3,6 +3,8 @@ package demo.rest.login;
 import demo.basicxception.DemoException;
 import demo.shiro.utils.ShiroSecurityUtils;
 import io.swagger.annotations.ApiParam;
+
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,14 @@ public class UserContorller {
 
         return ShiroSecurityUtils.getUser();
     }
+
+//    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+//    @ApiOperation("退出登入")
+//    public void logout() {
+//
+//        SecurityUtils.getSubject().logout();
+//    }
+
 
 
 //    @RequestMapping(value = "/login", method = RequestMethod.POST)

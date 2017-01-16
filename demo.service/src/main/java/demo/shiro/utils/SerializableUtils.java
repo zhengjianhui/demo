@@ -35,12 +35,11 @@ public class SerializableUtils {
         return rv;
     }
 
-
     public static Object deserialize(byte[] in) {
         return deserialize(in, Object.class);
     }
 
-    public static <T> T deserialize(byte[] in, Class<T>...requiredType) {
+    public static <T> T deserialize(byte[] in, Class<T>... requiredType) {
         Object rv = null;
         ByteArrayInputStream bis = null;
         ObjectInputStream is = null;

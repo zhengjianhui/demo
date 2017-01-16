@@ -13,7 +13,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import demo.shiro.utils.SerializableUtils;
 
-
 /**
  * Created by zhengjianhui on 17/1/1.
  */
@@ -24,7 +23,6 @@ public class RedisShiroSessionRepository implements ShiroSessionRepository {
     @Autowired
     @Qualifier("shiroSessionTemplate")
     private RedisTemplate<String, String> customShiroCache;
-
 
     @Override
     public void saveSession(final Session session) {
@@ -81,7 +79,6 @@ public class RedisShiroSessionRepository implements ShiroSessionRepository {
                 return null;
             }
         });
-
 
         return null;
     }

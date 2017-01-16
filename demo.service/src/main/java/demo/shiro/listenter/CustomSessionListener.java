@@ -5,11 +5,8 @@ import org.apache.shiro.session.SessionListener;
 
 import demo.shiro.session.repository.ShiroSessionRepository;
 
-
 /**
- * Created by zhengjianhui on 17/1/1.
- * 实现shiro 的 session 监听类
- * 当请求进入 shiro 的过滤链时自动进入
+ * Created by zhengjianhui on 17/1/1. 实现shiro 的 session 监听类 当请求进入 shiro 的过滤链时自动进入
  */
 public class CustomSessionListener implements SessionListener {
 
@@ -25,6 +22,7 @@ public class CustomSessionListener implements SessionListener {
 
     /**
      * 会话建立
+     * 
      * @param session
      */
     @Override
@@ -34,6 +32,7 @@ public class CustomSessionListener implements SessionListener {
 
     /**
      * 会话结束
+     * 
      * @param session
      */
     @Override
@@ -43,6 +42,7 @@ public class CustomSessionListener implements SessionListener {
 
     /**
      * 会话过期
+     * 
      * @param session
      */
     @Override
