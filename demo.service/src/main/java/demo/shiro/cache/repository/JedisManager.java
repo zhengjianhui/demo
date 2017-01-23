@@ -63,7 +63,7 @@ public class JedisManager {
         try {
             jedis = getJedis();
             jedis.select(dbIndex);
-            Long result = jedis.del(key);
+            jedis.del(key);
         } catch (Exception e) {
             isBroken = true;
             throw e;

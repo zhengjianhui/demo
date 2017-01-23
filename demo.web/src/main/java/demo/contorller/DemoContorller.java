@@ -18,7 +18,9 @@ import demo.dao.mybatis.interceptorPlugin.page.PageResult;
 import demo.dao.redis.DbTest1;
 import demo.domain.Archive;
 import demo.domain.user.User;
+import demo.event.ListnenrEventMessage;
 import demo.service.archive.ArchiveService;
+import demo.service.event.EventTestService;
 import demo.shiro.utils.ShiroSecurityUtils;
 import demo.test.Aaa;
 import demo.test.Demo;
@@ -38,13 +40,32 @@ public class DemoContorller {
     @Autowired
     private Demo ddddd;
 
-
+    @Autowired
+    private EventTestService eventTestService;
 
     @Autowired
     private DbTest1 dbTest1;
 
     @Autowired
     private ArchiveService archiveService;
+
+    @ApiOperation("测试事件发布")
+    @RequestMapping(value = "/event", method = RequestMethod.GET)
+    public void eventTest(@ApiParam(name = "flag", required = true, value = "是否使用事件发布") @RequestParam(value = "flag", required = true) Boolean flag) {
+
+        ListnenrEventMessage message = new ListnenrEventMessage();
+        message.setName("admin");
+        message.setMessage("测试发布事件");
+
+        if(flag) {
+            eventTestService.sendEventTransaction(message);
+        } else {
+            eventTestService.sendEvent(message);
+        }
+
+    }
+
+
 
     @ApiOperation("测试返回值")
     @RequestMapping(value = "/demo", method = RequestMethod.GET)

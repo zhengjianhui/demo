@@ -63,7 +63,8 @@ public class LoginFilter extends FormAuthenticationFilter {
             out.close();
         }
 
-        return Boolean.TRUE;
+        // 打断后续操作 避免多次响应
+        return Boolean.FALSE;
     }
 
     /**
@@ -88,7 +89,11 @@ public class LoginFilter extends FormAuthenticationFilter {
             e1.printStackTrace();
         } finally {
             out.flush();
-            out.close();
+
+            // java.lang.IllegalStateException: Cannot call sendError() after the response has been committed
+            // 所以当执行下面代码之后 ，reponse 会提交两次，服务器就不知道该怎么办了，所以抛出异常。
+            // 解决方案： 去掉out.close()  这里不会因为PrintWriter 输出对象没有关闭而占用资源的。
+             out.close();
         }
 
         return Boolean.FALSE;

@@ -107,7 +107,6 @@ public class PageUtil {
         } finally {
 
             try {
-
                 countStmt.close();
                 rs.close();
                 connection.close();

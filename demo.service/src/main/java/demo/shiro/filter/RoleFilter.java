@@ -20,8 +20,6 @@ public class RoleFilter extends AccessControlFilter {
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
         String[] arra = (String[]) mappedValue;
 
-        User user = ShiroSecurityUtils.getUser();
-
         Subject subject = getSubject(request, response);
         for (String role : arra) {
             if (subject.hasRole(role)) {
