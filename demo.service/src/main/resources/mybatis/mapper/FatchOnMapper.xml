@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demo.dao.mybatis.fatch.FatchOnMapper" >
+  <resultMap id="BaseResultMap" type="demo.domain.fatch.FatchOn" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="fatch_on" property="fatchOn" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, fatch_on
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from fatch_on
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from fatch_on
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="demo.domain.fatch.FatchOn" >
+    insert into fatch_on (id, fatch_on)
+    values (#{id,jdbcType=BIGINT}, #{fatchOn,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="demo.domain.fatch.FatchOn" >
+    insert into fatch_on
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="fatchOn != null" >
+        fatch_on,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="fatchOn != null" >
+        #{fatchOn,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="demo.domain.fatch.FatchOn" >
+    update fatch_on
+    <set >
+      <if test="fatchOn != null" >
+        fatch_on = #{fatchOn,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="demo.domain.fatch.FatchOn" >
+    update fatch_on
+    set fatch_on = #{fatchOn,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

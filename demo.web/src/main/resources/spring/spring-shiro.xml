@@ -131,6 +131,7 @@
         <property name="jedisManager" ref="cacherepository"/>
     </bean>
 
+    <!-- 登入后会执行的拦截器 -->
     <bean id="kickoutSessionControlFilter" class="demo.shiro.filter.KickoutSessionFilter">
         <property name="cacheManager" ref="cacheManager"/>
         <property name="sessionManager" ref="sessionManager"/>
@@ -154,13 +155,13 @@
             </map>
         </property>
 
-        <!--<property name="unauthorizedUrl" value="/?login"/>-->
         <property name="filterChainDefinitions">
             <value>
                 <!-- 在URI 后指定使用的拦截器 -->
                 /index.html = anon
+                /swagger/**" = anon
                 /rest/signUp = anon
-                /rest/login = authc
+                /rest/login = kickout, authc
                 /rest/logout = logout
                 /** = kickout, authc
                 <!--/page/register/* = anon-->
