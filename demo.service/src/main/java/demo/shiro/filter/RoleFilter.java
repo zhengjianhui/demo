@@ -8,6 +8,8 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
 
+import java.util.stream.Stream;
+
 import demo.domain.user.User;
 import demo.shiro.utils.ShiroSecurityUtils;
 
@@ -18,16 +20,17 @@ public class RoleFilter extends AccessControlFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
-        String[] arra = (String[]) mappedValue;
-
+//        String[] arra =  (String[])mappedValue;
         Subject subject = getSubject(request, response);
-        for (String role : arra) {
-            if (subject.hasRole(role)) {
-                return Boolean.TRUE;
-            }
-        }
 
-        return Boolean.FALSE;
+//        for (String role : (String[])mappedValue) {
+//            if(subject.hasRole(role)) {
+//                return Boolean.TRUE;
+//            }
+//        }
+
+        return Stream.of((String[])mappedValue).anyMatch(x -> subject.hasRole(x));
+
     }
 
     @Override

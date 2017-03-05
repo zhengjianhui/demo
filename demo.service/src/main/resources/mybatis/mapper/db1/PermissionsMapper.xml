@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="demo.dao.mybatis.user.PermissionsMapper" >
+<mapper namespace="demo.dao.mybatis.db1.user.PermissionsMapper" >
   <resultMap id="BaseResultMap" type="demo.domain.user.Permissions" >
     <id column="role_no" property="roleNo" jdbcType="VARCHAR" />
     <id column="permissions_no" property="permissionsNo" jdbcType="VARCHAR" />

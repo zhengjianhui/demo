@@ -1,4 +1,4 @@
-package demo.dao.mybatis.fatch;
+package demo.dao.mybatis.db1.fatch;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,7 @@ public interface FatchOnMapper {
 
     FatchOn selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(FatchOn record) throws DataAccessException;
+    int updateByPrimaryKeySelective(FatchOn record);
 
     int updateByPrimaryKey(FatchOn record);
 }

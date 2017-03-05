@@ -1,5 +1,8 @@
 package demo.contorller;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,13 +11,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
-
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import demo.dao.mybatis.fatch.FatchOnMapper;
+import demo.dao.mybatis.db1.fatch.FatchOnMapper;
+import demo.dao.mybatis.db2.ecommerce.SupplierMapper;
+import demo.domain.ecommerce.Supplier;
 import demo.domain.fatch.FatchOn;
 import demo.util.id.IdUtil;
+import demo.vo.SimpleSupplierVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -61,8 +67,6 @@ public class FatchController {
         updateF(f, ran);
 
     }
-
-
 
     private void updateF(FatchOn f, Random ran) {
 

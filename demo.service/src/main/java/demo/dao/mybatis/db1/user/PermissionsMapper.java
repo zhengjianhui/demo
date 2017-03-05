@@ -1,4 +1,4 @@
-package demo.dao.mybatis.user;
+package demo.dao.mybatis.db1.user;
 
 import demo.domain.user.Permissions;
 import org.apache.ibatis.annotations.Param;

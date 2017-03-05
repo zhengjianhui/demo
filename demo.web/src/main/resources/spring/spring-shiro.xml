@@ -159,7 +159,7 @@
             <value>
                 <!-- 在URI 后指定使用的拦截器 -->
                 /index.html = anon
-                /swagger/**" = anon
+                /swagger/** = anon
                 /rest/signUp = anon
                 /rest/login = kickout, authc
                 /rest/logout = logout

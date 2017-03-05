@@ -26,4 +26,8 @@ public class ShiroMd5 {
         // 四个参数分别标识算法名称，散列对象，散列使用的salt值，散列次数。
         return new SimpleHash("md5", source, ByteSource.Util.bytes(salt), 2).toHex();
     }
+
+    public static void main(String[] args) {
+        System.out.println(md5Password("123456"));
+    }
 }

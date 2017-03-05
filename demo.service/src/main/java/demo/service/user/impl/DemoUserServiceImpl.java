@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import demo.basicxception.DemoException;
-import demo.dao.mybatis.user.PermissionsMapper;
-import demo.dao.mybatis.user.RoleMapper;
-import demo.dao.mybatis.user.UserAuthorityMapper;
-import demo.dao.mybatis.user.UserMapper;
+import demo.dao.mybatis.db1.user.PermissionsMapper;
+import demo.dao.mybatis.db1.user.RoleMapper;
+import demo.dao.mybatis.db1.user.UserAuthorityMapper;
+import demo.dao.mybatis.db1.user.UserMapper;
 import demo.domain.user.User;
 import demo.service.DemoUserService;
 

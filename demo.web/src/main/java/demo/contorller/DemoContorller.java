@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping
-@Api("架构测试")
+@Api("各种测试")
 public class DemoContorller {
 
     @Autowired

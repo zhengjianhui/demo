@@ -1,15 +1,11 @@
-package demo.dao.mybatis.archive;
+package demo.dao.mybatis.db1.archive;
 
 import org.apache.ibatis.annotations.MapKey;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Select;
 
 import demo.dao.mybatis.interceptorPlugin.page.PageRequest;
 import demo.dao.mybatis.interceptorPlugin.page.PageResult;
 import demo.domain.Archive;
 
-import java.util.List;
 import java.util.Map;
 
 public interface ArchiveMapper {

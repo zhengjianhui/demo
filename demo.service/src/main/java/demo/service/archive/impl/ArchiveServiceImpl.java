@@ -1,6 +1,6 @@
 package demo.service.archive.impl;
 
-import demo.dao.mybatis.archive.ArchiveMapper;
+import demo.dao.mybatis.db1.archive.ArchiveMapper;
 import demo.dao.mybatis.interceptorPlugin.page.PageRequest;
 import demo.dao.mybatis.interceptorPlugin.page.PageResult;
 import demo.domain.Archive;

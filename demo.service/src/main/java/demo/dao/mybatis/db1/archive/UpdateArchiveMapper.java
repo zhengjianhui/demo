@@ -1,4 +1,4 @@
-package demo.dao.mybatis.archive;
+package demo.dao.mybatis.db1.archive;
 
 import demo.domain.UpdateArchive;
 
