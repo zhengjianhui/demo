@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demo.dao.mybatis.db2.bill.SubjectChargeRuleRelationMapper" >
+  <resultMap id="BaseResultMap" type="demo.domain.bill.SubjectChargeRuleRelation" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="charge_item_id" property="chargeItemId" jdbcType="BIGINT" />
+    <result column="charge_rule_id" property="chargeRuleId" jdbcType="BIGINT" />
+    <result column="subject_type" property="subjectType" jdbcType="VARCHAR" />
+    <result column="subject_id" property="subjectId" jdbcType="BIGINT" />
+    <result column="input_amount" property="inputAmount" jdbcType="DECIMAL" />
+    <result column="charge_start_day" property="chargeStartDay" jdbcType="DATE" />
+    <result column="charge_end_day" property="chargeEndDay" jdbcType="DATE" />
+    <result column="operator_id" property="operatorId" jdbcType="BIGINT" />
+    <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, charge_item_id, charge_rule_id, subject_type, subject_id, input_amount, charge_start_day,
+    charge_end_day, operator_id, operator_name, remark
+  </sql>
+
+  <select id="selectParkingSpaceChargeRuleRelations" resultType="demo.dto.bill.SubjectChargeRuleRelationDTO" >
+    select a.id, a.charge_item_id, b.name chargeItemName, b.category chargeCategory, b.outer_org, b.always_one_period, b.period_type, b.subject_type, a.charge_rule_id, a.subject_id, a.input_amount, a.charge_start_day, a.charge_end_day, a.operator_id, a.operator_name, a.remark,
+    c.name chargeRuleName, c.calc_type, c.unit_price, c.count_type, c.fixed_amount,c.calc_per_month, c.interval_month, concat(case when d.parking_lot_name is null then '' else  d.parking_lot_name end,d.no) as subject
+    from md_subject_charge_rule_relation a, md_charge_item b, md_charge_rule c, md_parking_space d
+    where a.charge_rule_id = c.id and a.charge_item_id = b.id and a.subject_type ='2' and a.subject_id = d.id
+    and d.block_id = #{blockId,jdbcType=BIGINT}
+    and b.block_id = #{blockId,jdbcType=BIGINT}
+    <if test="parkingLotId != null">
+        and d.parking_lot_id = #{parkingLotId,jdbcType=BIGINT}
+    </if>
+    <if test="spaceType != null">
+        and d.space_type = #{spaceType,jdbcType=VARCHAR}
+    </if>
+    <if test="parkingSpaceId != null">
+        and d.id = #{parkingSpaceId,jdbcType=BIGINT}
+    </if>
+    <if test="chargeItemId != null">
+         and a.charge_item_id = #{chargeItemId,jdbcType=BIGINT}
+         and b.id = #{chargeItemId,jdbcType=BIGINT}
+    </if>
+    <if test="chargeRuleId != null">
+        and a.charge_rule_id = #{chargeRuleId,jdbcType=BIGINT}
+        and c.id = #{chargeRuleId,jdbcType=BIGINT}
+    </if>
+    <if test="chargeRuleRelationIds != null">
+        and a.id in
+        <foreach collection="chargeRuleRelationIds" item="item" open="(" separator="," close=")">
+             #{item,jdbcType=BIGINT}
+        </foreach>
+    </if>
+  </select>
+
+
+</mapper>

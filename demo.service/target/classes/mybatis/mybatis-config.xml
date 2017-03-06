@@ -15,6 +15,6 @@
 
     <!-- plugin Interceptor 拓展mybatis -->
     <plugins>
-        <plugin interceptor="demo.dao.mybatis.interceptorPlugin.IntercrptorPage" />
+        <plugin interceptor="demo.data.datasource.interceptorPlugin.IntercrptorPage" />
     </plugins>
 </configuration>

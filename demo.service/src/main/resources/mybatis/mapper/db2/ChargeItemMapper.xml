@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demo.dao.mybatis.db2.bill.ChargeItemMapper" >
+  <resultMap id="BaseResultMap" type="demo.domain.bill.ChargeItem" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="category" property="category" jdbcType="VARCHAR" />
+    <result column="subject_type" property="subjectType" jdbcType="VARCHAR" />
+    <result column="outer_org" property="outerOrg" jdbcType="BIT" />
+    <result column="always_one_period" property="alwaysOnePeriod" jdbcType="BIT" />
+    <result column="period_type" property="periodType" jdbcType="VARCHAR" />
+    <result column="block_id" property="blockId" jdbcType="BIGINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, category, subject_type, outer_org, always_one_period, period_type, block_id, 
+    remark
+  </sql>
+
+  <select id="selectByBlockId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from md_charge_item
+    where block_id = #{blockId,jdbcType=BIGINT}
+  </select>
+
+</mapper>

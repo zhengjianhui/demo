@@ -1,12 +1,12 @@
 package demo.dao.mybatis.db1.archive;
 
 import org.apache.ibatis.annotations.MapKey;
-
-import demo.dao.mybatis.interceptorPlugin.page.PageRequest;
-import demo.dao.mybatis.interceptorPlugin.page.PageResult;
-import demo.domain.Archive;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
+
+import demo.domain.Archive;
 
 public interface ArchiveMapper {
 
@@ -18,7 +18,7 @@ public interface ArchiveMapper {
 
     Archive selectByPrimaryKey(Long id);
 
-    PageResult<Archive> selectList(PageRequest page, Archive archive);
+    Page<Archive> selectList(Pageable page, Archive archive);
 
     int updateByPrimaryKeySelective(Archive record);
 

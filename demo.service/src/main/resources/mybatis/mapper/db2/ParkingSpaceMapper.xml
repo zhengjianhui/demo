@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demo.dao.mybatis.db2.bill.ParkingSpaceMapper">
+    <resultMap id="BaseResultMap" type="demo.domain.bill.ParkingSpace">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="no" property="no" jdbcType="VARCHAR" />
+        <result column="parking_lot_id" property="parkingLotId" jdbcType="BIGINT" />
+        <result column="parking_lot_type" property="parkingLotType" jdbcType="VARCHAR" />
+        <result column="parking_lot_name" property="parkingLotName" jdbcType="VARCHAR" />
+        <result column="block_id" property="blockId" jdbcType="BIGINT" />
+        <result column="space_type" property="spaceType" jdbcType="VARCHAR" />
+        <result column="area" property="area" jdbcType="DECIMAL" />
+        <result column="relation_house_id" property="relationHouseId" jdbcType="BIGINT" />
+        <result column="car_num" property="carNum" jdbcType="VARCHAR" />
+        <result column="link_user_id" property="linkUserId" jdbcType="BIGINT" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <result column="sell_time" property="sellTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, no, parking_lot_id, parking_lot_type, parking_lot_name, block_id, space_type, area, relation_house_id,
+        car_num, link_user_id, remark, status, sell_time
+    </sql>
+    <sql id="Simple_Column_List">
+        id, no, parking_lot_id, parking_lot_name, space_type
+    </sql>
+    <sql id="parkingSpace_query_condition">
+        where block_id = #{dto.blockId,jdbcType=BIGINT}
+        <if test="dto.parkingLotId != null">
+            and parking_lot_id = #{dto.parkingLotId,jdbcType=BIGINT}
+        </if>
+        <if test="dto.hasRelationHouse != null">
+            <if test="dto.hasRelationHouse == true">
+                and relation_house_id is not null
+            </if>
+            <if test="dto.hasRelationHouse == false">
+                and relation_house_id is null
+            </if>
+        </if>
+        <if test="dto.spaceType != null">
+            and space_type = #{dto.spaceType,jdbcType=VARCHAR}
+        </if>
+        <if test="dto.no != null">
+            and (no =#{dto.no,jdbcType=VARCHAR} or car_num = #{dto.no,jdbcType=VARCHAR})
+        </if>
+        <if test="dto.status != null">
+            and status = #{dto.status}
+        </if>
+        <if test="dto.parkingSpaceIdList != null">
+            and id in
+            <foreach collection="dto.parkingSpaceIdList" open="(" item="item" separator="," close=")">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+        </if>
+    </sql>
+
+
+
+    <select id="quickSearch" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from md_parking_space
+        <include refid="parkingSpace_query_condition" />
+    </select>
+
+
+
+</mapper>

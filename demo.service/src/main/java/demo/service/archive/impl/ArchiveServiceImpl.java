@@ -1,12 +1,13 @@
 package demo.service.archive.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import demo.dao.mybatis.db1.archive.ArchiveMapper;
-import demo.dao.mybatis.interceptorPlugin.page.PageRequest;
-import demo.dao.mybatis.interceptorPlugin.page.PageResult;
 import demo.domain.Archive;
 import demo.service.archive.ArchiveService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -42,7 +43,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public PageResult<Archive> queryList(PageRequest page) {
+    public Page<Archive> queryList(Pageable page) {
 
         return archiveMapper.selectList(page, new Archive());
     }

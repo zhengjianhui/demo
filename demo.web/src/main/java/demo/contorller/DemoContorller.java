@@ -1,10 +1,12 @@
 package demo.contorller;
 
-import java.util.Date;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import demo.dao.mybatis.interceptorPlugin.page.PageRequest;
-import demo.dao.mybatis.interceptorPlugin.page.PageResult;
+import java.util.Date;
+
 import demo.dao.redis.DbTest1;
 import demo.domain.Archive;
 import demo.domain.user.User;
@@ -108,11 +110,13 @@ public class DemoContorller {
     }
 
     @ApiOperation("mybatis 自定义 interceptor 拦截分页测试")
-    @RequestMapping(value = "/archveAll", method = RequestMethod.POST)
-    public PageResult<Archive> queryAll(@ApiParam(name = "page", value = "分页参数") @RequestBody PageRequest page) {
+    @RequestMapping(value = "/archveAll", method = RequestMethod.GET)
+    public Page<Archive> queryAll(@ApiParam(name = "pageable", value = "分页信息,传参方式：?page=0&size=10") @PageableDefault(page = 0, size = 5) Pageable pageable) {
+        Page<Archive> archives = archiveService.queryList(pageable);
 
-        return archiveService.queryList(page);
+        return new PageImpl<Archive>(archives.getContent(), pageable, archives.getTotalElements());
     }
+
 
     @ApiOperation("patch测试")
     @RequestMapping(value = "/patchTest/{id}", method = RequestMethod.PATCH)

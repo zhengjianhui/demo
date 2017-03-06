@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demo.dao.mybatis.db2.bill.BillMapper">
+    <resultMap id="BaseResultMap" type="demo.domain.bill.Bill">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="charge_item_id" property="chargeItemId" jdbcType="BIGINT"/>
+        <result column="subject_type" property="subjectType" jdbcType="VARCHAR"/>
+        <result column="subject_id" property="subjectId" jdbcType="BIGINT"/>
+        <result column="subject" property="subject" jdbcType="VARCHAR"/>
+        <result column="house_id" property="houseId" jdbcType="BIGINT"/>
+        <result column="block_id" property="blockId" jdbcType="BIGINT"/>
+        <result column="property_id" property="propertyId" jdbcType="BIGINT"/>
+        <result column="unit_price" property="unitPrice" jdbcType="DECIMAL"/>
+        <result column="quantity" property="quantity" jdbcType="DECIMAL"/>
+        <result column="begin_date" property="beginDate" jdbcType="DATE"/>
+        <result column="end_date" property="endDate" jdbcType="DATE"/>
+        <result column="fee" property="fee" jdbcType="DECIMAL"/>
+        <result column="late_fee" property="lateFee" jdbcType="DECIMAL"/>
+        <result column="operator_id" property="operatorId" jdbcType="BIGINT"/>
+        <result column="operator_name" property="operatorName" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="total_bill_id" property="totalBillId" jdbcType="BIGINT"/>
+        <result column="check_status" property="checkStatus" jdbcType="VARCHAR"/>
+        <result column="pay_status" property="payStatus" jdbcType="VARCHAR"/>
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP"/>
+        <result column="prepaid_charge" property="prepaidCharge" jdbcType="TINYINT"/>
+        <result column="prepaid_remark" property="prepaidRemark" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, charge_item_id, subject_type, subject_id, subject, house_id, block_id, property_id,
+    unit_price, quantity, begin_date, end_date, fee, late_fee, operator_id, operator_name,
+    create_time, remark, total_bill_id, check_status, pay_status, pay_time, prepaid_charge,prepaid_remark
+  </sql>
+
+
+    <select id="selectParkingSpaceUnpaidBillsWithoutHouse" resultMap="BaseResultMap">
+        select a.*
+        from md_bill a, md_parking_space c
+        where a.subject_id=c.id
+        and a.pay_status = '0' and a.check_status = '1'
+        and c.parking_lot_id = #{parkingLotId,jdbcType=BIGINT}
+        <if test="chargeItemId != null">
+            and a.charge_item_id = #{chargeItemId,jdbcType=BIGINT}
+        </if>
+        <if test="chargeEndDay != null">
+            and #{chargeEndDay,jdbcType=BIGINT} > a.begin_date
+        </if>
+    </select>
+
+
+</mapper>

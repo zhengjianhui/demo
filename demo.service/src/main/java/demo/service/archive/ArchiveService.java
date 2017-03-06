@@ -1,19 +1,18 @@
 package demo.service.archive;
 
-import demo.dao.mybatis.interceptorPlugin.page.PageRequest;
-import demo.dao.mybatis.interceptorPlugin.page.PageResult;
-import demo.domain.Archive;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import demo.domain.Archive;
 
 /**
  * Created by zhengjianhui on 16/10/2.
  */
 public interface ArchiveService {
 
-    public void add();
+    void add();
 
-    public PageResult<Archive> queryList(PageRequest page);
+    Page<Archive> queryList(Pageable page);
 
 
 }

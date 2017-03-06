@@ -71,6 +71,8 @@
 
 
 
+
+
     <bean id="dbcp2"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${db.Driver}" />
@@ -84,12 +86,22 @@
         <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
         <property name="typeAliasesPackage" value="demo.domain" />
         <property name="mapperLocations" value="classpath:mybatis/mapper/db2/*.xml" />
+        <!--<property name="typeHandlers" value="#{mybatisTypeHandlerScanner.getTypeHandlers('demo.dao.mybatis.handler')}"/>-->
+        <property name="typeHandlersPackage" value="demo.dao.mybatis.handler"/>
     </bean>
 
 
     <bean id="configurer2" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" />
         <property name="basePackage" value="demo.dao.mybatis.db2" />
+    </bean>
+
+
+    <bean id="mybatisTypeHandlerScanner" class="demo.data.datasource.typeHandler.TypeHandlerScanner"/>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="demo.dao.mybatis.db2" />
+        <property name="annotationClass" value="org.springframework.stereotype.Repository" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2" />
     </bean>
 
 </beans>
