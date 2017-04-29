@@ -4,7 +4,6 @@ import demo.basicxception.DemoException;
 import demo.shiro.utils.ShiroSecurityUtils;
 import io.swagger.annotations.ApiParam;
 
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import demo.domain.user.User;
-import demo.service.DemoUserService;
+import demo.service.user.DemoUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 

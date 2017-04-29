@@ -1,4 +1,4 @@
-package demo.service;
+package demo.service.user;
 
 import demo.basicxception.DemoException;
 import demo.domain.user.User;

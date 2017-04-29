@@ -3,6 +3,7 @@ package demo.service.user.impl;
 
 import java.util.List;
 
+import demo.service.user.DemoUserService;
 import demo.shiro.realm.ShiroMd5;
 import demo.util.id.IdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,12 @@ import demo.dao.mybatis.db1.user.RoleMapper;
 import demo.dao.mybatis.db1.user.UserAuthorityMapper;
 import demo.dao.mybatis.db1.user.UserMapper;
 import demo.domain.user.User;
-import demo.service.DemoUserService;
 
 /**
  * Created by zhengjianhui on 16/10/7.
  */
 @Service
-public class DemoUserServiceImpl implements DemoUserService{
+public class DemoUserServiceImpl implements DemoUserService {
 
     @Autowired
     private UserMapper userMapper;
