@@ -2,6 +2,7 @@ package demo.dto.bill;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,7 @@ public class UnpaidBillDTO {
 
     @ApiModelProperty(value = "费用截止日期", required = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date feeExpireDate;
+    private LocalDate feeExpireDate;
 
     @ApiModelProperty(value = "待缴费明细", required = true)
     private List<UnpaidBillItemDTO> billItems = new ArrayList<>();
@@ -86,11 +87,11 @@ public class UnpaidBillDTO {
         this.chargeCategory = chargeCategory;
     }
 
-    public Date getFeeExpireDate() {
+    public LocalDate getFeeExpireDate() {
         return feeExpireDate;
     }
 
-    public void setFeeExpireDate(Date feeExpireDate) {
+    public void setFeeExpireDate(LocalDate feeExpireDate) {
         this.feeExpireDate = feeExpireDate;
     }
 

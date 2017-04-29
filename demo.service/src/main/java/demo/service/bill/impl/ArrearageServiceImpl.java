@@ -15,9 +15,12 @@ import org.springframework.util.StopWatch;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +43,9 @@ import demo.dto.bill.UnpaidBillItemDTO;
 import demo.enums.CalcType;
 import demo.enums.PeriodType;
 import demo.service.bill.ArrearageService;
-import demo.util.JSONUtil.JSONUtil;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 
 /**
@@ -68,7 +73,7 @@ public class ArrearageServiceImpl implements ArrearageService {
 
     @Override
     public Map<Long, List<UnpaidBillDTO>> getParkingLotAllUnpaidBill(Long blockId, Long parkingLotId, Long chargeItemId, boolean needCalcAmount,
-                                                                     Date chargeEndDay) {
+                                                                     LocalDateTime chargeEndDay) {
         ParkingSpaceQueryConditionDTO query = new ParkingSpaceQueryConditionDTO();
         query.setBlockId(blockId);
         query.setParkingLotId(parkingLotId);
@@ -84,32 +89,41 @@ public class ArrearageServiceImpl implements ArrearageService {
 
         Map<Long, List<UnpaidBillDTO>> result = new HashMap<>();
         // 获取小区收费项信息
-        List<ChargeItem> chargeItems = chargeItemMapper.selectByBlockId(blockId);
-        Map<Long, ChargeItem> chargeItemMap = new HashMap<>();
-        for (ChargeItem chargeItem : chargeItems) {
-            chargeItemMap.put(chargeItem.getId(), chargeItem);
-        }
+//        List<ChargeItem> chargeItems = chargeItemMapper.selectByBlockId(blockId);
+//        Map<Long, ChargeItem> chargeItemMap = new HashMap<>();
+//        for (ChargeItem chargeItem : chargeItems) {
+//            chargeItemMap.put(chargeItem.getId(), chargeItem);
+//        }
+
+        Map<Long, ChargeItem> chargeItemMap
+                = chargeItemMapper.selectByBlockId(blockId).stream().collect(toMap(ChargeItem::getId, x -> x));
+
 
         if (!CollectionUtils.isEmpty(parkingSpaces)) {
-            Map<Long, Subject> parkingSpaceMap = new HashMap<>(parkingSpaces.size());
-            for (ParkingSpace parkingSpace : parkingSpaces) {
-                parkingSpaceMap.put(parkingSpace.getId(), parkingSpace);
-            }
+//            Map<Long, Subject> parkingSpaceMap = new HashMap<>(parkingSpaces.size());
+//            for (ParkingSpace parkingSpace : parkingSpaces) {
+//                parkingSpaceMap.put(parkingSpace.getId(), parkingSpace);
+//            }
+
+            Map<Long, Subject> parkingSpaceMap = parkingSpaces.stream().collect(toMap(Subject::getId, x -> x));
+
 
             List<UnpaidBillDTO> parkingSpaceUnpaidBills = null;
-
             List<SubjectChargeRuleRelationDTO> parkingSpaceChargeRules = subjectChargeRuleRelationMapper.selectParkingSpaceChargeRuleRelations(subjectChargeRuleConditionDTO);
 
             if (!CollectionUtils.isEmpty(parkingSpaceChargeRules)) {
 
                 List<SubjectChargeItemRelation> parkingSpaceChargeItems = subjectChargeItemRelationMapper.selectParkingSpaceChargeItemRelationWithoutHouse(query, chargeItemId);
 
-                Map<String, SubjectChargeItemRelation> parkingSpaceChargeItemMap = new HashMap<>(parkingSpaceChargeItems.size());
+                Map<String, SubjectChargeItemRelation> parkingSpaceChargeItemMap
+                        = parkingSpaceChargeItems.stream().collect(toMap(x -> x.getId() + String.valueOf(x.getChargeItemId()), x -> x));
 
-                for (SubjectChargeItemRelation subjectChargeItemRelation : parkingSpaceChargeItems) {
-                    parkingSpaceChargeItemMap.put(subjectChargeItemRelation.getSubjectId() + "" + subjectChargeItemRelation.getChargeItemId(),
-                            subjectChargeItemRelation);
-                }
+//                Map<String, SubjectChargeItemRelation> parkingSpaceChargeItemMap = new HashMap<>(parkingSpaceChargeItems.size());
+//
+//                for (SubjectChargeItemRelation subjectChargeItemRelation : parkingSpaceChargeItems) {
+//                    parkingSpaceChargeItemMap.put(subjectChargeItemRelation.getSubjectId() + "" + subjectChargeItemRelation.getChargeItemId(),
+//                            subjectChargeItemRelation);
+//                }
 
                 parkingSpaceUnpaidBills = calcSubjectUnpaidBills(parkingSpaceChargeRules, parkingSpaceChargeItemMap, parkingSpaceMap, needCalcAmount,
                         chargeEndDay);
@@ -124,15 +138,19 @@ public class ArrearageServiceImpl implements ArrearageService {
             parkingSpaceUnpaidBills.addAll(parkingSpaceChargeitemUnpaidBillMap.values());
 
             if (!CollectionUtils.isEmpty(parkingSpaceUnpaidBills)) {
-                for (UnpaidBillDTO unpaidBillDTO : parkingSpaceUnpaidBills) {
-                    ParkingSpace parkingSpace = (ParkingSpace) parkingSpaceMap.get(unpaidBillDTO.getSubjectId());
-                    List<UnpaidBillDTO> list = result.get(parkingSpace.getId());
-                    if (list == null) {
-                        list = new ArrayList<>();
-                        result.put(parkingSpace.getId(), list);
-                    }
-                    list.add(unpaidBillDTO);
-                }
+//                for (UnpaidBillDTO unpaidBillDTO : parkingSpaceUnpaidBills) {
+//                    ParkingSpace parkingSpace = (ParkingSpace) parkingSpaceMap.get(unpaidBillDTO.getSubjectId());
+//                    List<UnpaidBillDTO> list = result.get(parkingSpace.getId());
+//                    if (list == null) {
+//                        list = new ArrayList<>();
+//                        result.put(parkingSpace.getId(), list);
+//                    }
+//                    list.add(unpaidBillDTO);
+//                }
+
+                result = parkingSpaceUnpaidBills.stream().collect(groupingBy(UnpaidBillDTO :: getSubjectId));
+
+
             }
 
         }
@@ -141,12 +159,12 @@ public class ArrearageServiceImpl implements ArrearageService {
 
 
     private List<UnpaidBillDTO> calcSubjectUnpaidBills(List<SubjectChargeRuleRelationDTO> subjectChargeRuleList,
-                                                       Map<String, SubjectChargeItemRelation> subjectChargeItemMap, Map<Long, Subject> subjectMap, boolean needCalcAmount, Date chargeEndDay) {
-        DateTime plan2ChargeEndDate = null;
+                                                       Map<String, SubjectChargeItemRelation> subjectChargeItemMap, Map<Long, Subject> subjectMap, boolean needCalcAmount, LocalDateTime chargeEndDay) {
+        LocalDateTime plan2ChargeEndDate = null;
         if (chargeEndDay != null) {
-            plan2ChargeEndDate = new DateTime(chargeEndDay);
+            plan2ChargeEndDate = chargeEndDay;
         } else {
-            plan2ChargeEndDate = new DateTime(System.currentTimeMillis());
+            plan2ChargeEndDate = LocalDateTime.now();
         }
 
         Map<String, UnpaidBillDTO> subjectChargeItemUnpaidBillMap = new HashMap<>(subjectChargeRuleList.size());
@@ -154,12 +172,12 @@ public class ArrearageServiceImpl implements ArrearageService {
             String subjectChargeItemId = subjectChargeRuleRelationDTO.getSubjectId() + "" + subjectChargeRuleRelationDTO.getChargeItemId();
             SubjectChargeItemRelation subjectChargeItem = subjectChargeItemMap.get(subjectChargeItemId);
             Subject subject = needCalcAmount ? subjectMap.get(subjectChargeRuleRelationDTO.getSubjectId()) : null;
-            DateTime plan2ChargeStartDate = null;
-            Date feeExpireDate = null;
+            LocalDateTime plan2ChargeStartDate = null;
+            LocalDate feeExpireDate = null;
             BigDecimal feeDiscount = null;
             if (subjectChargeItem != null) {
                 feeExpireDate = subjectChargeItem.getFeeExpireDate();
-                plan2ChargeStartDate = new DateTime(feeExpireDate.getTime()).plusDays(1);
+                plan2ChargeStartDate = LocalDateTime.from(feeExpireDate);
                 feeDiscount = subjectChargeItem.getFeeDiscount();
             }
 
@@ -234,7 +252,7 @@ public class ArrearageServiceImpl implements ArrearageService {
      * @param planCharge           是否计算计划应收金额，如果是的话,收费时段不会超出plan2ChargeEndDate
      */
     private UnpaidBillItemDTO generateUnpaidBillItemDTO(Subject subject, SubjectChargeRuleRelationDTO subjectChargeRuleDTO, BigDecimal feeDiscount,
-                                                        DateTime plan2ChargeStartDate, DateTime plan2ChargeEndDate, boolean needCalcAmount, boolean planCharge) {
+                                                        LocalDateTime plan2ChargeStartDate, LocalDateTime plan2ChargeEndDate, boolean needCalcAmount, boolean planCharge) {
         logger.info("plan2ChargeStartDate:{}  plan2ChargeEndDate:{}", plan2ChargeStartDate, plan2ChargeEndDate);
 
         // 计算费用收取时间段
@@ -254,12 +272,15 @@ public class ArrearageServiceImpl implements ArrearageService {
     }
 
 
-    private UnpaidBillItemDTO getPayDateRange(SubjectChargeRuleRelationDTO subjectChargeRuleDTO, DateTime plan2ChargeStartDate, DateTime plan2ChargeEndDate,
+    private UnpaidBillItemDTO getPayDateRange(SubjectChargeRuleRelationDTO subjectChargeRuleDTO, LocalDateTime plan2ChargeStartDate, LocalDateTime plan2ChargeEndDate,
                                               boolean planCharge) {
-        DateTime startDate = null;
-        DateTime endDate = null;
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
 
-        DateTime chargeRuleStartDay = new DateTime(subjectChargeRuleDTO.getChargeStartDay());
+//        Instant instant = subjectChargeRuleDTO.getChargeStartDay().toInstant();
+//        ZoneId zone = ZoneId.systemDefault();
+//        LocalDateTime chargeRuleStartDay = LocalDateTime.ofInstant(instant, zone);
+        LocalDateTime chargeRuleStartDay = subjectChargeRuleDTO.getChargeStartDay();
 
         // 收费规则开始时间在计划收费截止时间之后，收费规则未生效；当前收下期没考虑进去
         if (chargeRuleStartDay.isAfter(plan2ChargeEndDate)) {
@@ -274,12 +295,12 @@ public class ArrearageServiceImpl implements ArrearageService {
         }
 
         // 开始收费时间晚于收费规则费用截止日期，则收费规则已过时
-        if (subjectChargeRuleDTO.getChargeEndDay() != null && startDate.isAfter(new DateTime(subjectChargeRuleDTO.getChargeEndDay()))) {
+        if (subjectChargeRuleDTO.getChargeEndDay() != null && startDate.isAfter(subjectChargeRuleDTO.getChargeEndDay())) {
             return null;
         }
 
         // 收费规则费用截止时间
-        DateTime chargeRuleEndDay = subjectChargeRuleDTO.getChargeEndDay() == null ? null : new DateTime(subjectChargeRuleDTO.getChargeEndDay());
+        LocalDateTime chargeRuleEndDay = subjectChargeRuleDTO.getChargeEndDay() == null ? null : subjectChargeRuleDTO.getChargeEndDay();
         // 收费周期月数
         int monthCountPerPeriod = subjectChargeRuleDTO.getIntervalMonth().intValue();
 
@@ -364,26 +385,31 @@ public class ArrearageServiceImpl implements ArrearageService {
         }
 
         UnpaidBillItemDTO unpaidBillItemDTO = new UnpaidBillItemDTO();
-        unpaidBillItemDTO.setBeginDate(startDate.toDate());
-        unpaidBillItemDTO.setEndDate(endDate.toDate());
+        unpaidBillItemDTO.setBeginDate(startDate);
+        unpaidBillItemDTO.setEndDate(endDate);
 
         return unpaidBillItemDTO;
     }
 
-    private PeriodAndDayCount calcPeriodAndDayCount(DateTime startDate, DateTime endDate, int intervalMonth) {
+
+    private PeriodAndDayCount calcPeriodAndDayCount(LocalDateTime startDate, LocalDateTime endDate, int intervalMonth) {
         // 返回开始和结束时间之间的月份
-        int months = Months.monthsBetween(startDate, endDate).getMonths();
-        DateTime date = startDate.plusMonths(months);
+//        int months = Months.monthsBetween(startDate, endDate).getMonths();
+        int months = (int) startDate.until(endDate, ChronoUnit.MONTHS);
+        LocalDateTime date = startDate.plusMonths(months);
 
         // 周期不足时 获取之间的天数
-        int days = Days.daysBetween(date, endDate).getDays() + 1;
+//        int days = Days.daysBetween(date, endDate).getDays() + 1;
+        int days = (int) date.until(endDate, ChronoUnit.DAYS);
         // 当前月份的最大天数 + 1
-        if (date.dayOfMonth().getMaximumValue() == days) {
+        if (date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() == days) {
             months += 1;
         }
 
         int periodCount = months / intervalMonth;
-        days = Days.daysBetween(startDate.plusMonths(periodCount * intervalMonth), endDate).getDays() + 1;
+//        days = Days.daysBetween(startDate.plusMonths(periodCount * intervalMonth), endDate).getDays() + 1;
+        days = (int) startDate.plusMonths(periodCount * intervalMonth).until(endDate, ChronoUnit.DAYS);
+
 
         return new PeriodAndDayCount(periodCount, days);
     }

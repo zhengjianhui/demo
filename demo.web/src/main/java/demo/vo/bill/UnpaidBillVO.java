@@ -2,6 +2,7 @@ package demo.vo.bill;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class UnpaidBillVO {
     private String chargeItemName;
 
     @ApiModelProperty(value = "费用截止日期", required = false)
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date feeExpireDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDate feeExpireDate;
 
     @ApiModelProperty(value = "待缴费明细", required = true)
     private List<UnpaidBillItemDTO> billItems;
@@ -74,11 +75,11 @@ public class UnpaidBillVO {
         this.chargeItemName = chargeItemName;
     }
 
-    public Date getFeeExpireDate() {
+    public LocalDate getFeeExpireDate() {
         return feeExpireDate;
     }
 
-    public void setFeeExpireDate(Date feeExpireDate) {
+    public void setFeeExpireDate(LocalDate feeExpireDate) {
         this.feeExpireDate = feeExpireDate;
     }
 

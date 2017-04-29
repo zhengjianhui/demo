@@ -3,6 +3,7 @@ package demo.dao.mybatis.db2.bill;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public interface BillMapper {
 //                                             @Param("chargeEndDay") Date chargeEndDay);
 
     List<Bill> selectParkingSpaceUnpaidBillsWithoutHouse(@Param("parkingLotId") Long parkingLotId, @Param("chargeItemId") Long chargeItemId,
-                                                         @Param("chargeEndDay") Date chargeEndDay);
+                                                         @Param("chargeEndDay") LocalDateTime chargeEndDay);
 //
 //    List<Bill> selectStoreroomUnpaidBills(@Param("buildingId") Long buildingId, @Param("chargeItemId") Long chargeItemId,
 //                                          @Param("chargeEndDay") Date chargeEndDay);

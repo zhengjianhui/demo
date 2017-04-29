@@ -1,5 +1,8 @@
 package demo.service.bill;
 
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,5 +15,5 @@ import demo.dto.bill.UnpaidBillDTO;
 public interface ArrearageService {
 
     Map<Long, List<UnpaidBillDTO>> getParkingLotAllUnpaidBill(Long blockId, Long parkingLotId, Long chargeItemId, boolean needCalcAmount,
-                                                              Date chargeEndDay);
+                                                              LocalDateTime chargeEndDay);
 }

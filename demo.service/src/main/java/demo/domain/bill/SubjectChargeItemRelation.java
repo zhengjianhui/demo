@@ -2,6 +2,7 @@ package demo.domain.bill;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 import demo.enums.SubjectType;
@@ -18,7 +19,7 @@ public class SubjectChargeItemRelation implements Serializable {
 
     private BigDecimal feeDiscount;
 
-    private Date feeExpireDate;
+    private LocalDate feeExpireDate;
 
     private static final long serialVersionUID = 1L;
 
@@ -62,11 +63,15 @@ public class SubjectChargeItemRelation implements Serializable {
         this.feeDiscount = feeDiscount;
     }
 
-    public Date getFeeExpireDate() {
+    public LocalDate getFeeExpireDate() {
         return feeExpireDate;
     }
 
-    public void setFeeExpireDate(Date feeExpireDate) {
+    public void setFeeExpireDate(LocalDate feeExpireDate) {
         this.feeExpireDate = feeExpireDate;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 }

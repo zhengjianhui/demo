@@ -1,6 +1,7 @@
 package demo.dto.bill;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import demo.enums.CalcType;
@@ -47,9 +48,9 @@ public class SubjectChargeRuleRelationDTO {
 
     private BigDecimal inputAmount;
 
-    private Date chargeStartDay;
+    private LocalDateTime chargeStartDay;
 
-    private Date chargeEndDay;
+    private LocalDateTime chargeEndDay;
 
     private Long operatorId;
 
@@ -105,19 +106,19 @@ public class SubjectChargeRuleRelationDTO {
         this.inputAmount = inputAmount;
     }
 
-    public Date getChargeStartDay() {
+    public LocalDateTime getChargeStartDay() {
         return chargeStartDay;
     }
 
-    public void setChargeStartDay(Date chargeStartDay) {
+    public void setChargeStartDay(LocalDateTime chargeStartDay) {
         this.chargeStartDay = chargeStartDay;
     }
 
-    public Date getChargeEndDay() {
+    public LocalDateTime getChargeEndDay() {
         return chargeEndDay;
     }
 
-    public void setChargeEndDay(Date chargeEndDay) {
+    public void setChargeEndDay(LocalDateTime chargeEndDay) {
         this.chargeEndDay = chargeEndDay;
     }
 

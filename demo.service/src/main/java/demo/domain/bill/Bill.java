@@ -2,6 +2,8 @@ package demo.domain.bill;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import demo.enums.BillCheckStatus;
@@ -50,7 +52,7 @@ public class Bill implements Serializable {
 
     private String operatorName;
 
-    private Date createTime;
+    private LocalDate createTime;
 
     private String remark;
 
@@ -208,11 +210,11 @@ public class Bill implements Serializable {
         this.operatorName = operatorName == null ? null : operatorName.trim();
     }
 
-    public Date getCreateTime() {
+    public LocalDate getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDate createTime) {
         this.createTime = createTime;
     }
 

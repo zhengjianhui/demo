@@ -1,10 +1,14 @@
 package demo.dto.bill;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
+import demo.util.JSONUtil.LocalDateTimeDeserializer;
+import demo.util.JSONUtil.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -12,12 +16,15 @@ import io.swagger.annotations.ApiModelProperty;
 public class UnpaidBillItemDTO {
 
     @ApiModelProperty(value = "起始缴费日期", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date beginDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime beginDate;
 
     @ApiModelProperty(value = "缴费至日期", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date endDate;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime endDate;
 
     @ApiModelProperty(value = "金额计算公式", required = true)
     private String feeCalcFormula;
@@ -59,19 +66,19 @@ public class UnpaidBillItemDTO {
         this.fee = fee;
     }
 
-    public Date getBeginDate() {
+    public LocalDateTime getBeginDate() {
         return beginDate;
     }
 
-    public void setBeginDate(Date beginDate) {
+    public void setBeginDate(LocalDateTime beginDate) {
         this.beginDate = beginDate;
     }
 
-    public Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 
