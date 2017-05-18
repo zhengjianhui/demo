@@ -22,10 +22,17 @@ public abstract class ConfigurationLoader {
 
     private static String PARAM_ROOT;
 
+    /**
+     * 根据properties 中的值 初始化对应环境配置文件的路径
+     */
     static {
         init();
     }
 
+
+    /**
+     * 根据properties 中的值 初始化对应环境配置文件的路径
+     */
     private static void init() {
         String paramRoot = System.getProperty(ENV_NAME);
         if (StringUtils.isEmpty(paramRoot)) {
@@ -86,6 +93,13 @@ public abstract class ConfigurationLoader {
         return filePath.substring(0, filePath.lastIndexOf("."));
     }
 
+
+    /**
+     * 根据对应路径拿到指定的所有properties 文件
+     *
+     * @return 解析成key value 的Properties 对象
+     * @throws IOException
+     */
     public static Properties getConfigProperties() throws IOException {
         ResourcePatternResolver loader = new PathMatchingResourcePatternResolver();
         Resource[] resources = loader.getResources(PARAM_ROOT + "/*.properties");
@@ -96,6 +110,15 @@ public abstract class ConfigurationLoader {
         return props;
     }
 
+    /**
+     *
+     * 将
+     *
+     * @param resources     properties 文件资源数组
+     * @param props         Properties 对象
+     * @throws IOException
+     *
+     */
     private static void loadProperties(Resource[] resources, Properties props) throws IOException {
         for (Resource resource : resources) {
             logger.info("Loading properties file from {}", resource);
